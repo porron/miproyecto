@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="100"
+        android:title="@string/menu_settings" 
+        android:icon="@android:drawable/ic_menu_preferences"/>
+    <item android:id="@+id/menu_editar" 
+        android:title="@string/aceptar"
+        android:icon="@android:drawable/ic_menu_edit"
+		android:showAsAction="ifRoom|withText"></item>
+    <item android:id="@+id/Modo_comunicacion" android:checkable="true" android:title="Mostrar actividad" android:checked="false"></item>
+    <item android:id="@+id/item1" android:title="@string/hello_world" android:icon="@android:drawable/ic_dialog_alert" android:showAsAction="always"></item>
+    <item android:id="@+id/Modo_local" android:checkable="true" android:title="Comunicando" android:checked="false"></item>
+
+</menu>

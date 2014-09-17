@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:layout="@layout/vacio">
+    <PreferenceCategory android:title="IDENTIFICACION">
+        <EditTextPreference android:title="Nombre del servidor" android:key="NOMBRE_SERVIDOR" android:defaultValue="miservidor"/>
+        <EditTextPreference android:title="Password" android:key="PASS_SERVIDOR" android:defaultValue="abcd"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="COMUNICACION">
+    <EditTextPreference android:defaultValue="192.168.1.130" android:title="direccion del espejo" android:key="DIR_ESPEJO"/>
+     </PreferenceCategory>
+    
+
+</PreferenceScreen>

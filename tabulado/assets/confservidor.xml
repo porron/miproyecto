@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Servidor nombre="miservidor" password="abcd">
+    <plc id="0" nombre="mikka" ip="192.168.1.10" refresco="500" >
+    <item nombre="varia" tipoProtocolo="1" rango="3" offset="0" tipo="3" representacion="2" historico="10" granulado="1"/>
+    <item nombre="var2" tipoProtocolo="6" rango="3" offset="2" tipo="3" representacion ="1" historico="0" granulado="1" max="10" min="0" dim="Litros/s"/>
+    <item nombre="gh" tipoProtocolo="0"  rango="3" offset="1" tipo="3" representacion ="3" historico="0" granulado="1"/>
+    <item nombre="tttt" tipoProtocolo="0"  rango="3" offset="2" tipo="3" representacion ="4" historico="0" granulado="1"/>
+    <item nombre="gh2" tipoProtocolo="0"  rango="3" offset="0" tipo="3" representacion ="5" historico="20" plotlong="10" granulado="1"/>
+    <alarma nombre="primera" fuenteDato1="varia" fuenteDato2="gh" operador="1" />
+    <alarma nombre="segunda" fuenteDato1="varia" fuenteDato2="gh" operador="3" />
+     <descripcion>
+        <plot>
+            <serie item="varia"/>
+        </plot>
+        <seekbar valoractual="varia" consigna="gh" />
+        <boton item= "var2"/>
+        <texto item="gh"/>
+        <editable item="varia"/>
+    </descripcion>
+    </plc>
+    <plc id="1" nombre="perr" ip="192.168.1.7" refresco="300">
+           <item nombre="perrr1" tipoProtocolo="0" rango="3" offset="0" tipo="3" representacion ="5" historico="20"  plotlong="10" granulado="1"/>
+
+    </plc>
+</Servidor>

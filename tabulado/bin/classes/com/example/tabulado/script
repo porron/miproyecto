@@ -1,0 +1,4 @@
+adb shell
+su
+chmod 777 /data/data/com.example.tabulado
+chmod 777 /data/data/com.example.tabulado/files

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">tabulado</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+
+    <string-array name="tiposdato">      
+		<item>BINARY</item>
+        <item>TWO_BYTE_INT_UNSIGNED</item>
+        <item>TWO_BYTE_INT_SIGNED</item>
+        <item>FOUR_BYTE_INT_UNSIGNED</item>
+        <item>FOUR_BYTE_INT_SIGNED</item>
+        <item>FOUR_BYTE_INT_UNSIGNED_SWAPPED</item>
+        <item>FOUR_BYTE_INT_SIGNED_SWAPPED</item>
+        <item>FOUR_BYTE_FLOAT</item>
+        <item>FOUR_BYTE_FLOAT_SWAPPED</item>
+        <item>EIGHT_BYTE_INT_UNSIGNED</item>
+        <item>EIGHT_BYTE_INT_SIGNED</item>
+        <item>EIGHT_BYTE_INT_UNSIGNED_SWAPPED</item>
+        <item>EIGHT_BYTE_INT_SIGNED_SWAPPED</item>
+        <item>EIGHT_BYTE_FLOAT</item>
+        <item>EIGHT_BYTE_FLOAT_SWAPPED</item>
+        <item>TWO_BYTE_BCD</item>
+        <item>FOUR_BYTE_BCD</item>
+    </string-array>
+    
+    <string-array name="rangos">      
+		<item>Coil outputs</item>
+        <item>Digital inputs</item>
+        <item>Analogue inputs</item>
+        <item>Holding registers</item>
+        <item>Extended registers</item>
+    </string-array>
+    
+    <string-array name="representaciones">      
+		<item>Barra deslizable</item>
+        <item>Texto</item>
+        <item>Texto editable</item>
+        <item>Boton</item>
+        <item>Grafico</item>
+    </string-array>
+    
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="editarvariable">Editar</string>
+    <string name="crearvariable">crear</string>
+    <string name="borrarvariable">eliminar</string>
+    <string name="anadir">Añadir mas</string>
+    <string name="TplcNombre">Nombre</string>
+    <string name="TplcRefresco">Frecuencia de refresco</string>
+    <string name="TplcIp">Ip</string>
+    <string name="nuevo_plc">Nuevo</string>
+    <string name="Plc_nuevo">Crear Plc nuevo</string>
+    <string name="editar_plc">Editar Plc</string>
+
+</resources>

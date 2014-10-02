@@ -46,6 +46,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
 public class MainActivity extends FragmentActivity {
@@ -200,6 +201,9 @@ public class MainActivity extends FragmentActivity {
      
             }
             else {
+            	Toast toast = Toast.makeText(MainActivity.ctx, "espejo "+MainActivity.dir_espejo,
+    					Toast.LENGTH_SHORT);
+    			toast.show();
             	comunicando = true;
             	item.setChecked(true);
     			sock comunicacion = new sock ();

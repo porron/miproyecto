@@ -1,33 +1,10 @@
 package com.example.tabulado;
 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-/*
- import javax.xml.bind.JAXBContext;
- import javax.xml.bind.JAXBException;
- import javax.xml.bind.Marshaller;
- import javax.xml.bind.Unmarshaller;
- */
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-
-
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.util.Log;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Vector;
 
 import libreria.item;
 import libreria.variableEscribir;
@@ -41,7 +18,7 @@ public class plc {
 	public int refresco;
 //	public Map <String,item> variables;
 	public java.util.ArrayList<item> variables;
-	public java.util.ArrayList<variableEscribir> ListaEscribir;
+	public Vector<variableEscribir> ListaEscribir;
 	public java.util.ArrayList<alarma> ListaAlarmas;
 	public comunicacion_asinc hilo_comunicacion;
 //	public  Map <String,Double> ListaEscribir ;
@@ -56,7 +33,7 @@ public class plc {
 		this.refresco = refresco;
 //		this.variables = new HashMap <String,item> ();
 		this.variables = new ArrayList<item>();
-		this.ListaEscribir = new ArrayList<variableEscribir>();
+		this.ListaEscribir =  new Vector<variableEscribir>();
 //		this.ListaEscribir = new HashMap <String,Double> ();
 		variables = lista;
 

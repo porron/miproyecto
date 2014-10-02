@@ -66,7 +66,7 @@ class comunicacion_asinc extends Thread implements Runnable {
 		ModbusFactory factory = new ModbusFactory();
 		IpParameters params = new IpParameters();
 		// params.setHost(miPlc.ip);
-		params.setHost("192.168.1.130");
+		params.setHost("192.168.1.131");
 
 		params.setPort(502);
 		params.setEncapsulated(false);

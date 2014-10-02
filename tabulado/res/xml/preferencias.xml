@@ -5,7 +5,7 @@
         <EditTextPreference android:title="Password" android:key="PASS_SERVIDOR" android:defaultValue="abcd"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="COMUNICACION">
-    <EditTextPreference android:defaultValue="192.168.1.130" android:title="direccion del espejo" android:key="DIR_ESPEJO"/>
+    <EditTextPreference android:defaultValue="82.223.78.55" android:title="direccion del espejo" android:key="DIR_ESPEJO"/>
      </PreferenceCategory>
     
 

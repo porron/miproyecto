@@ -37,9 +37,11 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 		paquete mipaquete = null;
 
 		try {
-//			android.os.Debug.waitForDebugger();
-
+			android.os.Debug.waitForDebugger();
+			publishProgress(10);
+	
 			Log.e("sock", "arranco el thread ");
+			
 //			cola_de_salida = new ArrayBlockingQueue<item>(10);
 			MainActivity.misocket = new Socket(MainActivity.dir_espejo, 4444);
 			// MainActivity.misocket = new Socket("192.168.1.10", 4444);
@@ -69,6 +71,7 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 		} catch (IOException e) {
 			Log.e("conexion", "no conecta :" + e.getMessage());
 	//		System.err.println("no conecta :" + e.getMessage());
+			publishProgress(13);
 			System.exit(1);
 			publishProgress(mipaquete.tipo);
 		} catch (ClassNotFoundException e) {
@@ -81,12 +84,18 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 		int tipo = progress[0];
 		Toast toast;
 		switch (tipo) {
-		case 11:
+		case 10:
 			Log.e("sock", "servidor recibe 11 ");
-			toast = Toast.makeText(MainActivity.ctx, "solicitando conexion",
+			toast = Toast.makeText(MainActivity.ctx, "espejo "+MainActivity.dir_espejo,
 					Toast.LENGTH_SHORT);
 			toast.show();
 			break;
+		case 11:
+				Log.e("sock", "servidor recibe 11 ");
+				toast = Toast.makeText(MainActivity.ctx, "solicitando conexion",
+						Toast.LENGTH_SHORT);
+				toast.show();
+				break;
 		case 12:
 			Log.e("sock", "servidor recibe 12");
 			

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -223,7 +224,7 @@ public  class xml {
 			}
 			
 			miplc.variables=variables;
-			miplc.ListaEscribir= new ArrayList<variableEscribir>(); 
+			miplc.ListaEscribir= new Vector<variableEscribir>(); 
 			
 	        nl = elemento.getElementsByTagName("alarma");        
 	    	for (int i = 0; i < nl.getLength()  ; i++) {

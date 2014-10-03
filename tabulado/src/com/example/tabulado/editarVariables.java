@@ -1,5 +1,7 @@
 package com.example.tabulado;
 
+import java.util.Iterator;
+
 import libreria.item;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -49,32 +51,37 @@ public class editarVariables extends DialogFragment implements
 		// Pass null as the parent view because its going in the dialog layout
 		View rootView = inflater.inflate(R.layout.editar_variables, null);
 		final EditText nombre = (EditText) rootView.findViewById(R.id.tnombre);
-		final EditText posicion = (EditText) rootView.findViewById(R.id.trefresco);
-		final EditText historico = (EditText) rootView.findViewById(R.id.textoip);
+		final EditText posicion = (EditText) rootView
+				.findViewById(R.id.trefresco);
+		final EditText historico = (EditText) rootView
+				.findViewById(R.id.textoip);
 		final EditText plotlong = (EditText) rootView.findViewById(R.id.tlong);
 
-		final Spinner spinnerTipo = (Spinner) rootView.findViewById(R.id.spinnerTipo);
+		final Spinner spinnerTipo = (Spinner) rootView
+				.findViewById(R.id.spinnerTipo);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				MainActivity.ctx, R.array.tiposdato,android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				MainActivity.ctx, R.array.tiposdato,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(R.layout.layoutspiner);
+
 		spinnerTipo.setAdapter(adapter);
 		spinnerTipo.setOnItemSelectedListener(this);
-		
-		
-		final Spinner spinnerRango = (Spinner) rootView.findViewById(R.id.spinnerRango);
-		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(MainActivity.ctx,
-		        R.array.rangos, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		final Spinner spinnerRango = (Spinner) rootView
+				.findViewById(R.id.spinnerRango);
+		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
+				MainActivity.ctx, R.array.rangos,
+				android.R.layout.simple_dropdown_item_1line);
 		spinnerRango.setAdapter(adapter2);
 		spinnerRango.setOnItemSelectedListener(this);
-		
-		final Spinner spinnerRepresentacion = (Spinner) rootView.findViewById(R.id.spinnerrepresentacion);
-		ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(MainActivity.ctx,
-		        R.array.representaciones, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		final Spinner spinnerRepresentacion = (Spinner) rootView
+				.findViewById(R.id.spinnerrepresentacion);
+		ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
+				MainActivity.ctx, R.array.representaciones,
+				android.R.layout.simple_dropdown_item_1line);
 		spinnerRepresentacion.setAdapter(adapter3);
 		spinnerRepresentacion.setOnItemSelectedListener(this);
-		
 
 		if (editando) {
 			// mivariable =
@@ -96,29 +103,38 @@ public class editarVariables extends DialogFragment implements
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
-						mivariable.nombre = nombre.getText().toString();
-						mivariable.offset = Integer.parseInt(posicion.getText()
-								.toString());
-						mivariable.tipoDato = (int) spinnerTipo.getSelectedItemId();
-						mivariable.rango= (int) spinnerRango.getSelectedItemId();
-						mivariable.representacion=(int) spinnerRango.getSelectedItemId();
-						mivariable.plotlong= Integer.parseInt(posicion.getText().toString());
-						if (Integer.parseInt(historico.getText().toString())>0)
-						mivariable.historial= new libreria.historico ( Integer.parseInt(historico.getText().toString()));
-						
-						editarVariables.this.getDialog().dismiss();
-						if (!editando) {
-							miPlc.variables.add(mivariable);
-						}
-						xml.generarServidor();
-						xml.escribirXml(MainActivity.ctx);
+						if (validarNombre(nombre.getText().toString())) {
 
-						/*miPlc.hilo_comunicacion.cancel(true);
-						miPlc.hilo_comunicacion = new comunicacion_asinc()
-								.execute(miPlc);
-						*/
-	/*					miPlc.hilo_comunicacion = new comunicacion_asinc(miPlc);
-						miPlc.hilo_comunicacion.start();*/
+							mivariable.nombre = nombre.getText().toString();
+							mivariable.offset = Integer.parseInt(posicion
+									.getText().toString());
+							mivariable.tipoDato = (int) spinnerTipo
+									.getSelectedItemId();
+							mivariable.rango = (int) spinnerRango
+									.getSelectedItemId();
+							mivariable.representacion = (int) spinnerRango
+									.getSelectedItemId();
+							mivariable.plotlong = Integer.parseInt(posicion
+									.getText().toString());
+							mivariable.granulado = Double.parseDouble(posicion
+									.getText().toString());
+							if (Integer
+									.parseInt(historico.getText().toString()) > 0)
+								mivariable.historial = new libreria.historico(
+										Integer.parseInt(historico.getText()
+												.toString()));
+
+							editarVariables.this.getDialog().dismiss();
+							if (!editando) {
+								miPlc.variables.add(mivariable);
+							}
+							xml.generarServidor();
+							xml.escribirXml(MainActivity.ctx);
+						} else {
+							Toast toast = Toast.makeText(MainActivity.ctx,
+									"El nombre de la variable ya existe",
+									Toast.LENGTH_SHORT);
+						}
 
 					}
 				});
@@ -132,31 +148,49 @@ public class editarVariables extends DialogFragment implements
 			builder.setNeutralButton(R.string.anadir,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
-							mivariable.nombre = nombre.getText().toString();
-							mivariable.offset = Integer.parseInt(posicion.getText()
-									.toString());
-							mivariable.tipoDato = (int) spinnerTipo.getSelectedItemId();
-							mivariable.rango= (int) spinnerRango.getSelectedItemId();
-							mivariable.representacion=(int) spinnerRango.getSelectedItemId();
-							mivariable.plotlong= Integer.parseInt(posicion.getText().toString());
-							if (Integer.parseInt(historico.getText().toString())>0)
-							mivariable.historial= new libreria.historico ( Integer.parseInt(historico.getText().toString()));
-							
-							miPlc.variables.add(mivariable);
-							nombre.setText(null);
-							posicion.setText(null);
-							spinnerTipo.setSelection(0);
-							Context context = MainActivity.ctx;
-							CharSequence text = "Variable añadida. Debe aun guardar al finalizar pulsando 'Aceptar'";
-							int duration = Toast.LENGTH_SHORT;
 
-							Toast toast = Toast.makeText(context, text,
-									duration);
-							toast.show();
-							editarVariables.this.getDialog().show();
+							if (validarNombre(nombre.getText().toString())) {
+
+								mivariable.nombre = nombre.getText().toString();
+								mivariable.offset = Integer.parseInt(posicion
+										.getText().toString());
+								mivariable.tipoDato = (int) spinnerTipo
+										.getSelectedItemId();
+								mivariable.rango = (int) spinnerRango
+										.getSelectedItemId();
+								mivariable.representacion = (int) spinnerRango
+										.getSelectedItemId();
+								mivariable.plotlong = Integer.parseInt(posicion
+										.getText().toString());
+								mivariable.granulado = Double
+										.parseDouble(posicion.getText()
+												.toString());
+
+								if (Integer.parseInt(historico.getText()
+										.toString()) > 0)
+									mivariable.historial = new libreria.historico(
+											Integer.parseInt(historico
+													.getText().toString()));
+
+								miPlc.variables.add(mivariable);
+								nombre.setText(null);
+								posicion.setText(null);
+								spinnerTipo.setSelection(0);
+								Context context = MainActivity.ctx;
+								CharSequence text = "Variable añadida. Debe aun guardar al finalizar pulsando 'Aceptar'";
+								int duration = Toast.LENGTH_SHORT;
+
+								Toast toast = Toast.makeText(context, text,
+										duration);
+								toast.show();
+								editarVariables.this.getDialog().show();
+							} else {
+								Toast toast = Toast.makeText(MainActivity.ctx,
+										"El nombre de la variable ya existe",
+										Toast.LENGTH_SHORT);
+							}
 						}
 					});
-
 
 		posicion.addTextChangedListener(new TextWatcher() {
 			private void handleText() {
@@ -238,11 +272,29 @@ public class editarVariables extends DialogFragment implements
 	}
 
 	public void onDismiss(DialogInterface dialog) {
-	/*	miPlc.hilo_comunicacion.cancel(true);
-		miPlc.hilo_comunicacion = new comunicacion_asinc().execute(miPlc);
-	*/	
-	//	miPlc.hilo_comunicacion = new comunicacion_asinc(miPlc);
-	// miPlc.hilo_comunicacion.start();
+		/*
+		 * miPlc.hilo_comunicacion.cancel(true); miPlc.hilo_comunicacion = new
+		 * comunicacion_asinc().execute(miPlc);
+		 */
+		// miPlc.hilo_comunicacion = new comunicacion_asinc(miPlc);
+		// miPlc.hilo_comunicacion.start();
+	}
+
+	boolean validarNombre(String minombre) {
+		boolean noencontrado = true;
+		Iterator<plc> it = servidor.plcs.iterator();
+		while (it.hasNext()) {
+			plc p = (plc) it.next();
+			int cont = 0;
+			while (noencontrado) {
+				if (p.variables.get(cont).nombre.equals(minombre))
+					noencontrado = false;
+				else
+					cont = cont + 1;
+			}
+		}
+		;
+		return noencontrado;
 	}
 
 }

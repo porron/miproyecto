@@ -13,6 +13,7 @@ import com.androidplot.xy.XYStepMode;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -75,6 +76,8 @@ public class dibuja extends View {
 				final Number valor = variable.valor;
 				ToggleButton b = new ToggleButton(MainActivity.ctx);
 				b.setId(i);
+				b.setGravity(Gravity.RIGHT);
+//				b.setLayoutParams(LinearLayout.)
 				
 				botones.put(b.getId(), variable.nombre);
 				b.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

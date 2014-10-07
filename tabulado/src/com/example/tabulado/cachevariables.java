@@ -20,7 +20,7 @@ class cachevariables {
 
       public TextView getNombre (int resource) {
           if ( nombre == null ) {
-                nombre = ( TextView ) baseView.findViewById(R.id.textView1);
+                nombre = ( TextView ) baseView.findViewById(R.id.titulo);
           }
           return nombre;
     }

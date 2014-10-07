@@ -3,5 +3,8 @@
     <item android:id="@+id/item1" android:title="@string/crearvariable" android:menuCategory="container"></item>
     <item android:id="@+id/item2" android:title="@string/editarvariable"></item>
     <item android:id="@+id/item3" android:title="@string/borrarvariable"></item>
-    <group android:id="@+id/group1" android:visible="true" android:enabled="true" android:menuCategory="container"></group>
+    <group android:id="@+id/group1" android:visible="true" android:enabled="true" android:menuCategory="container">
+        <item android:id="@+id/subir" android:title="@string/subir"></item>
+        <item android:id="@+id/bajar" android:title="@string/bajar"></item>
+    </group>
 </menu>

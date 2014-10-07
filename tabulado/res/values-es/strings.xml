@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lvariables">Lista de variables</string>
+    <string name="alerta_plc">Se ha roto la conexion con el plc</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="editarvariable">Editar</string>
+    <string name="crearvariable">crear</string>
+    <string name="borrarvariable">eliminar</string>
+    <string name="anadir">Añadir mas</string>
+    <string name="TplcNombre">Nombre</string>
+    <string name="TplcRefresco">Frecuencia de refresco</string>
+    <string name="TplcIp">Ip</string>
+    <string name="nuevo_plc">Nuevo</string>
+    <string name="Plc_nuevo">Crear Plc nuevo</string>
+    <string name="editar_plc">Editar Plc</string>
 </resources>

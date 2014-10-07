@@ -33,14 +33,8 @@ public class guardian {
 						Iterator<plc> it = servidor.plcs.iterator();
 						while (it.hasNext()) {
 							p = (plc) it.next();
-							//Log.e("guardian", " estado  "+p.nombre + p.hilo_comunicacion.getStatus());
-						/*	if (p.hilo_comunicacion.getStatus() == AsyncTask.Status.FINISHED) {
-								Log.e("guardian", "relanzo " + p.nombre);*/
-							/*	p.hilo_comunicacion.getStatus();
-								p.hilo_comunicacion = new comunicacion_asinc().execute(p);
-							*/	
 								p.hilo_comunicacion = new comunicacion_asinc(p);
-								p.hilo_comunicacion.start();
+								p.hilo_comunicacion.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);	
 
 							
 						}

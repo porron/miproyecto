@@ -12,13 +12,16 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYStepMode;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -40,6 +43,8 @@ public class dibuja extends View {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
+	
+	
 
 	public static LinearLayout rellena(plc mp) {
 
@@ -47,7 +52,10 @@ public class dibuja extends View {
 		LinearLayout milayout = new LinearLayout(MainActivity.ctx);
 		// final List <item> lasvariables = new ArrayList () ;
 		milayout.setOrientation(LinearLayout.VERTICAL);
-
+		panel mipanel= new panel(MainActivity.ctx);
+		mipanel.tiltular("gagagagaag");
+		milayout.addView(mipanel);
+		
 		for (int i = 0; i < mp.variables.size(); i++) {
 
 			/*
@@ -64,18 +72,19 @@ public class dibuja extends View {
 			
 
 			item variable = (item) mp.variables.get(i);
-			// if (variable.valor != null) {
+//			if (variable.valor != null) {
 			LinearLayout mil = new LinearLayout(MainActivity.ctx);
 			TextView t = new TextView(MainActivity.ctx);
 			switch (variable.representacion) {
 
 			case 4:
 
-				mil.setOrientation(LinearLayout.HORIZONTAL);
-				t.setText(variable.nombre);
+		//		mil.setOrientation(LinearLayout.HORIZONTAL);
+		//		t.setText(variable.nombre);
 				final Number valor = variable.valor;
 				ToggleButton b = new ToggleButton(MainActivity.ctx);
 				b.setId(i);
+				b.setText(variable.nombre);
 				b.setGravity(Gravity.RIGHT);
 //				b.setLayoutParams(LinearLayout.)
 				
@@ -96,9 +105,9 @@ public class dibuja extends View {
 						}
 					}
 				});
-				mil.addView(t);
-				mil.addView(b);
-				milayout.addView(mil);
+		//		mil.addView(t);
+		//		mil.addView(b);
+				mipanel.meter(b);
 				variable.view = b;
 
 				break;
@@ -113,7 +122,8 @@ public class dibuja extends View {
 							+ variable.valor.toString());
 				// mil.addView(t);
 				// mil.addView(valor1);
-				milayout.addView(valor1);
+			//	milayout.addView(valor1);
+				mipanel.meter(valor1);
 				milayout.setLayoutParams(lp);
 				variable.view = valor1;
 
@@ -121,21 +131,35 @@ public class dibuja extends View {
 			case 3:
 				mil.setOrientation(LinearLayout.HORIZONTAL);
 				t.setText(variable.nombre);
+				t.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 40f));
+
 				final EditText valorEdit = new EditText(MainActivity.ctx);
-				valorEdit.setMinimumWidth(200);
+				valorEdit.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 50f));
+				
+//				valorEdit.setMinimumWidth(200);
 
 				Button aceptar = new Button(MainActivity.ctx);
 				aceptar.setId(i);
+				Resources res = MainActivity.ctx.getResources();
+				Drawable myImage = res.getDrawable(android.R.drawable.btn_default_small);
+				aceptar.setBackground(myImage);
+				aceptar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 10f));
+
 				botones.put(aceptar.getId(), variable.nombre);
 				aceptar.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
+						if (!(valorEdit.getText().equals(""))) {
 						int n = v.getId();
 						double valor = Double.parseDouble(valorEdit.getText()
 								.toString());
 						String nombre = botones.get(n);
 						int pagina = MainActivity.mViewPager.getCurrentItem();
 						servidor.plcs.get(pagina).ListaEscribir.add(new variableEscribir(nombre, valor));
-						
+						}
+						else {
+							Toast toast = Toast.makeText(MainActivity.ctx, "Debe escribir un valor",
+									Toast.LENGTH_SHORT);
+						}
 				//		 MainActivity.mViewPager.getWindowToken().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 									}
 				});
@@ -197,8 +221,8 @@ public class dibuja extends View {
 					// miplot.setRangeStepMode(XYStepMode.SUBDIVIDE);
 					// miplot.setRangeStepValue(5);
 
-					miplot.setRangeValueFormat(new DecimalFormat("###.#"));
-					miplot.setDomainValueFormat(new DecimalFormat("###.#"));
+					miplot.setRangeValueFormat(new DecimalFormat("###"));
+					miplot.setDomainValueFormat(new DecimalFormat("###"));
 
 					PointLabelFormatter plf = new PointLabelFormatter(
 							Color.rgb(0, 0, 0));
@@ -242,7 +266,7 @@ public class dibuja extends View {
 				break;
 			case 2:
 				TextView t = (TextView) (variable.view);
-				t.setText(variable.nombre + "   " + variable.valor.toString());
+				t.setText(variable.nombre + "   " + variable.valor.toString()+ " "+variable.dim);
 				variable.view.invalidate();
 				break;
 

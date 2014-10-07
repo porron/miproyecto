@@ -57,7 +57,7 @@
     </TableLayout>
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#999999"

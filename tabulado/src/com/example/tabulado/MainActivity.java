@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Iterator;
+
 
 import libreria.item;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,11 +17,9 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.support.v4.app.DialogFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -53,8 +50,9 @@ public class MainActivity extends FragmentActivity {
 
 
 	public static SectionsPagerAdapter mSectionsPagerAdapter;
-
 	public static ViewPager mViewPager;
+	public static  android.support.v4.app.FragmentManager fragmentManager;
+
 
 	public static plc miPlc;
 	public static Context ctx;
@@ -76,6 +74,7 @@ public class MainActivity extends FragmentActivity {
 	public static String dir_espejo="";
 	public static boolean comunicando=false;
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -94,7 +93,7 @@ public class MainActivity extends FragmentActivity {
 		pass_servidor = sharedPref.getString("PASS_SERVIDOR", "");
 		dir_espejo = sharedPref.getString("DIR_ESPEJO", "");
 		
-
+		fragmentManager = getSupportFragmentManager();
 
 		int c = servidor.plcs.size();
 		if (c == 0) {
@@ -142,8 +141,10 @@ public class MainActivity extends FragmentActivity {
 		while (it.hasNext()) {			
 			plc p = (plc) it.next();
 			//	p.hilo_comunicacion= new comunicacion_asinc().execute(p);
-				p.hilo_comunicacion= new comunicacion_asinc(p);
-				p.hilo_comunicacion.start();
+			//	p.hilo_comunicacion= new comunicacion_asinc(p);
+			//	p.hilo_comunicacion.start();
+				p.hilo_comunicacion = new comunicacion_asinc (p);
+				p.hilo_comunicacion.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);	
 			
 			};
 			pintor mipintor= (pintor) new pintor().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -169,8 +170,33 @@ public class MainActivity extends FragmentActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.menu_editar:
+			
+	/*		ColorSelectDialog dc=new ColorSelectDialog(ctx, new OnColorChangedListener() {
+		        @Override
+		        public void onOk(ColorSelectDialog dialog, int color) {
+		                // color is the color selected by the user.
+		        }
+		                
+		        @Override
+		        public void onCancel(ColorSelectDialog dialog) {
+		                // cancel was selected by the user
+		        }}, "ola", 0);
+			dc.show();
+	*/		
+	/*		AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, 0xff0000ff, new OnAmbilWarnaListener() {
+		        @Override
+		        public void onOk(AmbilWarnaDialog dialog, int color) {
+		                // color is the color selected by the user.
+		        }	                
+		        @Override
+		        public void onCancel(AmbilWarnaDialog dialog) {
+		                // cancel was selected by the user
+		        }
+		});
+
+		dialog.show();
+	*/		
 			EditarPlc dialogo = new EditarPlc(true);
-			FragmentManager fragmentManager = getSupportFragmentManager();
 			dialogo.show(fragmentManager, "crear Plc");
 			return true;			
         case R.id.Modo_comunicacion:
@@ -404,8 +430,6 @@ public class MainActivity extends FragmentActivity {
 				pagina = mViewPager.getCurrentItem();
 				if (clickvariable) {
 					editarVariables dialogo = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
-					FragmentManager fragmentManager = getSupportFragmentManager();
-
 					dialogo.show(getSupportFragmentManager(), "crear");
 				}
 				else {
@@ -458,6 +482,17 @@ public class MainActivity extends FragmentActivity {
 					dialogo.show(getSupportFragmentManager(), "editar");	
 				}
 				mode.finish(); // Action picked, so close the CAB
+				return true;
+				
+			case R.id.subir:
+				 java.util.Collections.swap(servidor.plcs.get(MainActivity.pagina).variables,MainActivity.indvariable,MainActivity.indvariable-1);
+					xml.generarServidor();
+					xml.escribirXml(MainActivity.ctx);
+				return true;
+			case R.id.bajar:
+				 java.util.Collections.swap(servidor.plcs.get(MainActivity.pagina).variables,MainActivity.indvariable,MainActivity.indvariable+1);
+					xml.generarServidor();
+					xml.escribirXml(MainActivity.ctx);
 				return true;
 
 			default:

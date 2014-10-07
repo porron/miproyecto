@@ -121,6 +121,9 @@ public  class xml {
 			else nodoitem.setAttribute("historico","0");
 			nodoitem.setAttribute("plotlong",Integer.toString(mi.plotlong));
 			nodoitem.setAttribute("granulado",Double.toString(mi.granulado.doubleValue()));
+			nodoitem.setAttribute("max",Double.toString(mi.max));
+			nodoitem.setAttribute("min",Double.toString(mi.min));
+			nodoitem.setAttribute("dim",mi.dim);
 			
 			nodoplc.appendChild(nodoitem);
 		}

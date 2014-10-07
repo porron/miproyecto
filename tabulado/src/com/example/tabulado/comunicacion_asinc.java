@@ -12,10 +12,12 @@ import libreria.item;
 import libreria.paquete;
 import libreria.variableEscribir;
 
+//import android.app.DialogFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
@@ -28,10 +30,13 @@ import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
+import android.support.v4.app.DialogFragment;
 
 //class comunicacion_asinc extends AsyncTask<plc, Integer, Void> {
 
-class comunicacion_asinc extends Thread implements Runnable {
+//class comunicacion_asinc extends Thread implements Runnable {
+
+	public class comunicacion_asinc extends AsyncTask<Void, String, Void> {
 
 	public static final String[] tipos = { "BINARY", "TWO_BYTE_INT_UNSIGNED",
 			"TWO_BYTE_INT_SIGNED", "FOUR_BYTE_INT_UNSIGNED",
@@ -48,29 +53,22 @@ class comunicacion_asinc extends Thread implements Runnable {
 	private boolean funciona = true;
 	plc miPlc;
 	paquete mipaquete;
-
 	comunicacion_asinc(plc Plc) {
 		miPlc = Plc;
 	}
 
+	@Override
 	// protected Void doInBackground(plc... parametro) {
-
-	public void run() {
-		// android.os.Debug.waitForDebugger();
-		// plc miPlc = parametro[0];
+	protected Void doInBackground(Void... params) {
 		Date date = new Date();
-		// String slaveIP = "10.0.2.2";
-
-		// Log.e("conexion", "entra " + date.toString());
-
 		ModbusFactory factory = new ModbusFactory();
-		IpParameters params = new IpParameters();
+		
+		IpParameters param = new IpParameters();
 		// params.setHost(miPlc.ip);
-		params.setHost("192.168.1.131");
-
-		params.setPort(502);
-		params.setEncapsulated(false);
-		ModbusMaster master = factory.createTcpMaster(params, true);
+		param.setHost("192.168.1.131");
+		param.setPort(502);
+		param.setEncapsulated(false);
+		ModbusMaster master = factory.createTcpMaster(param, true);
 		master.setTimeout(500);
 		master.setRetries(2);
 
@@ -86,15 +84,6 @@ class comunicacion_asinc extends Thread implements Runnable {
 
 		for (int i = 0; i < miPlc.variables.size(); i++) {
 
-			/*
-			 * Set nom=miPlc.variables.entrySet(); Iterator it=nom.iterator();
-			 * 
-			 * while (it.hasNext()){ Map.Entry m =(Map.Entry)it.next(); item
-			 * variable=(item)m.getValue();
-			 */
-			// ModbusLocator locator = new
-			// ModbusLocator(1,RegisterRange.HOLDING_REGISTER, variable.origen,
-			// variable.tipoDato);
 			item variable = (item) miPlc.variables.get(i);
 			ModbusLocator locator = new ModbusLocator(1, variable.rango,
 					variable.offset, variable.tipoDato);
@@ -167,9 +156,6 @@ class comunicacion_asinc extends Thread implements Runnable {
 					Iterator it = miPlc.ListaEscribir.iterator();
 					item mivariable;
 					while (it.hasNext()) {
-						// Map.Entry m = (Map.Entry) it.next();
-						// String nombre = (String) m.getKey();
-						// Double valor = (Double) m.getValue();
 						variableEscribir v = (variableEscribir) it.next();
 
 						mivariable = miPlc.buscar(v.nombre);
@@ -185,19 +171,25 @@ class comunicacion_asinc extends Thread implements Runnable {
 
 			} catch (ModbusTransportException e) {
 				funciona = false;
-				// Log.e("conexion", "transporte " + e.getMessage());
-				// this.cancel(true);
+				publishProgress(e.getMessage());
 			} catch (ErrorResponseException e) {
-				// Log.e("conexion", "respuesta " + e.getMessage());
-				// this.cancel(true);
+				publishProgress(e.getMessage());
 				funciona = false;
 			} catch (InterruptedException e) {
-				// Log.e("conexion", " int " + e.getMessage());
-				// this.cancel(true);
+				publishProgress(e.getMessage());
 			}
 		}
 		master.destroy();
-
+		return null;
 	}
 
+	
+	protected void onProgressUpdate(String... progress) {
+		
+	    alerta_conexion_plc newFragment = new alerta_conexion_plc(miPlc.nombre+"\nError  : "+progress[0]);
+	    newFragment.show(MainActivity.fragmentManager, "missiles");
+		
+
+	
+	}
 }

@@ -30,6 +30,7 @@ public class editarVariables extends DialogFragment implements
 	item mivariable = null;
 	plc miPlc;
 
+
 	public editarVariables(item variable, plc Plc) {
 
 		super();
@@ -44,6 +45,8 @@ public class editarVariables extends DialogFragment implements
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -56,6 +59,9 @@ public class editarVariables extends DialogFragment implements
 		final EditText historico = (EditText) rootView
 				.findViewById(R.id.textoip);
 		final EditText plotlong = (EditText) rootView.findViewById(R.id.tlong);
+		final EditText max = (EditText) rootView.findViewById(R.id.editmax);
+		final EditText min = (EditText) rootView.findViewById(R.id.editmin);
+		final EditText magnitud = (EditText) rootView.findViewById(R.id.editmagnitud);
 
 		final Spinner spinnerTipo = (Spinner) rootView
 				.findViewById(R.id.spinnerTipo);
@@ -71,7 +77,7 @@ public class editarVariables extends DialogFragment implements
 				.findViewById(R.id.spinnerRango);
 		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
 				MainActivity.ctx, R.array.rangos,
-				android.R.layout.simple_dropdown_item_1line);
+				android.R.layout.simple_spinner_item);
 		spinnerRango.setAdapter(adapter2);
 		spinnerRango.setOnItemSelectedListener(this);
 
@@ -79,7 +85,7 @@ public class editarVariables extends DialogFragment implements
 				.findViewById(R.id.spinnerrepresentacion);
 		ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
 				MainActivity.ctx, R.array.representaciones,
-				android.R.layout.simple_dropdown_item_1line);
+				android.R.layout.simple_spinner_item);
 		spinnerRepresentacion.setAdapter(adapter3);
 		spinnerRepresentacion.setOnItemSelectedListener(this);
 
@@ -118,6 +124,11 @@ public class editarVariables extends DialogFragment implements
 									.getText().toString());
 							mivariable.granulado = Double.parseDouble(posicion
 									.getText().toString());
+							mivariable.max= Double.parseDouble(max
+									.getText().toString());
+							mivariable.max= Double.parseDouble(min
+									.getText().toString());
+							mivariable.dim= magnitud.getText().toString();							
 							if (Integer
 									.parseInt(historico.getText().toString()) > 0)
 								mivariable.historial = new libreria.historico(
@@ -165,6 +176,11 @@ public class editarVariables extends DialogFragment implements
 								mivariable.granulado = Double
 										.parseDouble(posicion.getText()
 												.toString());
+								mivariable.max= Double.parseDouble(max
+										.getText().toString());
+								mivariable.max= Double.parseDouble(min
+										.getText().toString());
+								mivariable.dim= magnitud.getText().toString();
 
 								if (Integer.parseInt(historico.getText()
 										.toString()) > 0)
@@ -296,5 +312,6 @@ public class editarVariables extends DialogFragment implements
 		;
 		return noencontrado;
 	}
+
 
 }

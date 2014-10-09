@@ -244,6 +244,17 @@ public class MainActivity extends FragmentActivity {
             Intent inten = new Intent(this, panelAlarmas.class );
             startActivity(inten);
             return true;
+        case R.id.menuvariable:
+			editarVariables dia = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
+			dia.show(getSupportFragmentManager(), "crear");
+		
+            return true;
+        case R.id.menupanel:
+			editarVariables dia = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
+			dia.show(getSupportFragmentManager(), "crear");
+		
+            return true;
+
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -493,6 +504,10 @@ public class MainActivity extends FragmentActivity {
 				 java.util.Collections.swap(servidor.plcs.get(MainActivity.pagina).variables,MainActivity.indvariable,MainActivity.indvariable+1);
 					xml.generarServidor();
 					xml.escribirXml(MainActivity.ctx);
+				return true;
+			case R.id.editpanel:
+				EditarPaneles dialogo = new EditarPaneles();
+				dialogo.show(getSupportFragmentManager(), "editar");
 				return true;
 
 			default:

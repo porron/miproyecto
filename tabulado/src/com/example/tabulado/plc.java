@@ -20,6 +20,7 @@ public class plc {
 	public java.util.ArrayList<item> variables;
 	public Vector<variableEscribir> ListaEscribir;
 	public java.util.ArrayList<alarma> ListaAlarmas;
+	public java.util.ArrayList<panel> paneles;
 	public comunicacion_asinc hilo_comunicacion;
 //	public  Map <String,Double> ListaEscribir ;
 
@@ -33,10 +34,11 @@ public class plc {
 		this.refresco = refresco;
 //		this.variables = new HashMap <String,item> ();
 		this.variables = new ArrayList<item>();
+		this.paneles = new ArrayList<panel>();
 		this.ListaEscribir =  new Vector<variableEscribir>();
 //		this.ListaEscribir = new HashMap <String,Double> ();
 		variables = lista;
-
+ 
 	}
 
 	// Metodos Setters y Getters

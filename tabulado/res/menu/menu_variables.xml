@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/item1" android:title="@string/crearvariable" android:menuCategory="container"></item>
-    <item android:id="@+id/item2" android:title="@string/editarvariable"></item>
-    <item android:id="@+id/item3" android:title="@string/borrarvariable"></item>
-    <group android:id="@+id/group1" android:visible="true" android:enabled="true" android:menuCategory="container">
+    
+    
+    
+    <group android:id="@+id/group1" android:visible="true" android:enabled="true" android:menuCategory="container"><item android:id="@+id/item1" android:title="@string/crearvariable" android:menuCategory="container"></item><item android:id="@+id/item2" android:title="@string/editarvariable"></item><item android:id="@+id/item3" android:title="@string/borrarvariable"></item>
         <item android:id="@+id/subir" android:title="@string/subir"></item>
         <item android:id="@+id/bajar" android:title="@string/bajar"></item>
+    </group>
+    <group android:id="@+id/group2">
+        <item android:id="@+id/editpanel" android:title="@string/editpanel"></item>
     </group>
 </menu>

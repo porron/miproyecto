@@ -35,10 +35,10 @@ public class panelAlarmas extends Activity {
 			
 		}
 
-		ListView listView = (ListView) findViewById(R.id.listView1); 
+		ListView listView = (ListView) findViewById(R.id.lista_paneles); 
        
         
-        ListView lista = (ListView) findViewById(R.id.listView1);
+        ListView lista = (ListView) findViewById(R.id.lista_paneles);
         lista.setAdapter(new lista_adaptador(this, R.layout.entradalarma, miarray){
 			@Override
 			public void onEntrada(Object entrada, View view) {

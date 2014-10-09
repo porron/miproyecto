@@ -12,5 +12,9 @@
     <item android:id="@+id/Modo_comunicacion" android:checkable="true" android:title="Mostrar actividad" android:checked="false"></item>
     <item android:id="@+id/item1" android:title="@string/hello_world" android:icon="@android:drawable/ic_dialog_alert" android:showAsAction="always"></item>
     <item android:id="@+id/Modo_local" android:checkable="true" android:title="Comunicando" android:checked="false"></item>
+    <group android:id="@+id/group1">
+        <item android:id="@+id/menuvariable" android:title="@string/editarvariable"></item>
+        <item android:id="@+id/menupanel" android:title="@string/menupanel"></item>
+    </group>
 
 </menu>

@@ -58,16 +58,6 @@ public class dibuja extends View {
 		
 		for (int i = 0; i < mp.variables.size(); i++) {
 
-			/*
-			 * Set nom=p.variables.entrySet(); Iterator it=nom.iterator();
-			 * 
-			 * while (it.hasNext()){ Map.Entry m =(Map.Entry)it.next(); item
-			 * variable=(item)m.getValue();
-			 */
-
-			// final java.util.ArrayList<variableEscribir> listaEscrituraPlc =
-			// p.ListaEscribir ;
-
 			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams( LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 			
 
@@ -77,7 +67,7 @@ public class dibuja extends View {
 			TextView t = new TextView(MainActivity.ctx);
 			switch (variable.representacion) {
 
-			case 4:
+			case 4:// boton
 
 		//		mil.setOrientation(LinearLayout.HORIZONTAL);
 		//		t.setText(variable.nombre);
@@ -87,6 +77,9 @@ public class dibuja extends View {
 				b.setText(variable.nombre);
 				b.setGravity(Gravity.RIGHT);
 //				b.setLayoutParams(LinearLayout.)
+				Drawable myI = MainActivity.ctx.getResources().getDrawable(android.R.drawable.button_onoff_indicator_off);
+				b.setBackground(myI);
+
 				
 				botones.put(b.getId(), variable.nombre);
 				b.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -111,7 +104,7 @@ public class dibuja extends View {
 				variable.view = b;
 
 				break;
-			case 2:
+			case 2://texto
 
 				// mil.setOrientation(LinearLayout.HORIZONTAL);
 				// t.setText(variable.nombre);
@@ -128,7 +121,7 @@ public class dibuja extends View {
 				variable.view = valor1;
 
 				break;
-			case 3:
+			case 3://editable
 				mil.setOrientation(LinearLayout.HORIZONTAL);
 				t.setText(variable.nombre);
 				t.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 40f));
@@ -141,7 +134,7 @@ public class dibuja extends View {
 				Button aceptar = new Button(MainActivity.ctx);
 				aceptar.setId(i);
 				Resources res = MainActivity.ctx.getResources();
-				Drawable myImage = res.getDrawable(android.R.drawable.btn_default_small);
+				Drawable myImage = res.getDrawable(android.R.drawable.btn_star);
 				aceptar.setBackground(myImage);
 				aceptar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 10f));
 
@@ -172,7 +165,7 @@ public class dibuja extends View {
 				variable.view = valorEdit;
 
 				break;
-			case 1:
+			case 1://barra deslizable
 				  final String varnom =variable.nombre;
 
 				  final TextView consigna = new  TextView(MainActivity.ctx);
@@ -207,7 +200,7 @@ public class dibuja extends View {
 				  variable.view = sb;
 				 
 				break;
-			case 5:
+			case 5://plot
 
 				if (variable.historial.buffer.length > 0) {
 
@@ -221,8 +214,8 @@ public class dibuja extends View {
 					// miplot.setRangeStepMode(XYStepMode.SUBDIVIDE);
 					// miplot.setRangeStepValue(5);
 
-					miplot.setRangeValueFormat(new DecimalFormat("###"));
-					miplot.setDomainValueFormat(new DecimalFormat("###"));
+					miplot.setRangeValueFormat(new DecimalFormat("#######.#"));
+					miplot.setDomainValueFormat(new DecimalFormat("#######"));
 
 					PointLabelFormatter plf = new PointLabelFormatter(
 							Color.rgb(0, 0, 0));
@@ -250,19 +243,7 @@ public class dibuja extends View {
 
 			switch (variable.representacion) {
 
-			case 4:
-				//
-				// mil.setOrientation(LinearLayout.HORIZONTAL);
-				// t.setText(variable.nombre);
-				// final Number valor=variable.valor; ToggleButton b = new
-				// ToggleButton(MainActivity.ctx);
-				// b.setOnCheckedChangeListener(new
-				// CompoundButton.OnCheckedChangeListener() { public void
-				// onCheckedChanged(CompoundButton buttonView, boolean
-				// isChecked) { if (isChecked) { variable.valor=1;
-				// } else { variable.valor=0; } } }); mil.addView(t);
-				// mil.addView(b); milayout.addView(mil); variable.view = b;
-
+			case 4:// es de escritura
 				break;
 			case 2:
 				TextView t = (TextView) (variable.view);
@@ -270,30 +251,7 @@ public class dibuja extends View {
 				variable.view.invalidate();
 				break;
 
-			case 1:
-				/*
-				 * t.setText(variable.nombre + "  " +
-				 * variable.valor.toString()); TextView consigna = new
-				 * TextView(MainActivity.ctx);
-				 * consigna.setText(variable.valor.toString());
-				 * 
-				 * SeekBar sb = new SeekBar(MainActivity.ctx);
-				 * sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				 * int progressChanged = 0;
-				 * 
-				 * public void onProgressChanged(SeekBar seekBar, int progress,
-				 * boolean fromUser) { progressChanged = progress; }
-				 * 
-				 * public void onStartTrackingTouch(SeekBar seekBar) { // TODO
-				 * Auto-generated method stub }
-				 * 
-				 * public void onStopTrackingTouch(SeekBar seekBar) {
-				 * seekBar.setSecondaryProgress(seekBar.getProgress()); } });
-				 * 
-				 * mil.setOrientation(LinearLayout.VERTICAL); mil.addView(t);
-				 * mil.addView(sb); mil.addView(consigna);
-				 * milayout.addView(mil); variable.view = sb;
-				 */
+			case 1:// es de escritura
 				break;
 			case 5:
 				XYPlot miplot = (XYPlot) variable.view;

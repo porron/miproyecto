@@ -124,20 +124,26 @@ public  class xml {
 			nodoitem.setAttribute("max",Double.toString(mi.max));
 			nodoitem.setAttribute("min",Double.toString(mi.min));
 			nodoitem.setAttribute("dim",mi.dim);
+			nodoitem.setAttribute("panel", mi.panel);
 			
 			nodoplc.appendChild(nodoitem);
 		}
 		for( int i = 0 ; i < miplc.ListaAlarmas.size() ; i++ ){
 			ma=(alarma) miplc.ListaAlarmas.get(i);
-
 			Element nodoitem = documentoXML.createElement("alarma");
 			nodoitem.setAttribute("nombre", ma.nombre);
 			nodoitem.setAttribute("fuenteDato1",ma.fuenteDato1);
 			nodoitem.setAttribute("fuenteDato2",ma.fuenteDato2);
 			nodoitem.setAttribute("operador",Integer.toString(ma.operador));
-
 			nodoplc.appendChild(nodoitem);
 		}
+		for( int i = 0 ; i < miplc.paneles.size() ; i++ ){
+			Element nodopanel = documentoXML.createElement("panel");
+			nodopanel.setAttribute("titulo", miplc.paneles.get(i).titulo.toString());
+			nodoplc.appendChild(nodopanel);
+		}
+		
+
 		return nodoplc;
 	}
 
@@ -158,6 +164,8 @@ public  class xml {
 	public  static void parsearDocumento() {
 
 		Element docEle = documentoXML.getDocumentElement();
+		
+
 //		servidor.nombre=docEle.getAttribute("nombre");
 //		servidor.password=docEle.getAttribute("password");
 		NodeList nl = docEle.getElementsByTagName("plc");
@@ -238,6 +246,15 @@ public  class xml {
 		        		el.getAttribute("fuenteDato2"),
 		        		operador);
 				alarmas.add(mialarma);
+	    	}	
+			miplc.ListaAlarmas=alarmas;
+			
+	        nl = elemento.getElementsByTagName("panel");        
+	    	for (int i = 0; i < nl.getLength()  ; i++) {
+	            Element el = (Element) nl.item(i);
+	            String titulo =el.getAttribute("titulo");
+	            panel mipanel= new panel(MainActivity.ctx);
+				miplc.paneles.add(mipanel);
 	    	}	
 			miplc.ListaAlarmas=alarmas;
 			

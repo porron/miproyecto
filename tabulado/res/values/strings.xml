@@ -58,5 +58,7 @@
     <string name="editar_plc">Editar Plc</string>
     <string name="subir">subir variable</string>
     <string name="bajar">bajar variable</string>
+    <string name="editpanel">editar panel</string>
+    <string name="menupanel">Paneles</string>
 
 </resources>

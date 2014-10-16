@@ -1,5 +1,6 @@
 package com.example.tabulado;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import libreria.item;
@@ -19,6 +20,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -65,40 +67,69 @@ public class editarVariables extends DialogFragment implements
 
 		final Spinner spinnerTipo = (Spinner) rootView
 				.findViewById(R.id.spinnerTipo);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+		ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(
 				MainActivity.ctx, R.array.tiposdato,
 				android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(R.layout.layoutspiner);
+	//	adapterTipo.setDropDownViewResource(R.layout.layoutspiner);
 
-		spinnerTipo.setAdapter(adapter);
-		spinnerTipo.setOnItemSelectedListener(this);
+		spinnerTipo.setAdapter(adapterTipo);
+//		spinnerTipo.setOnItemSelectedListener(this);
 
 		final Spinner spinnerRango = (Spinner) rootView
 				.findViewById(R.id.spinnerRango);
-		ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
+		ArrayAdapter<CharSequence> adapterRango = ArrayAdapter.createFromResource(
 				MainActivity.ctx, R.array.rangos,
 				android.R.layout.simple_spinner_item);
-		spinnerRango.setAdapter(adapter2);
-		spinnerRango.setOnItemSelectedListener(this);
+		spinnerRango.setAdapter(adapterRango);
+//		spinnerRango.setOnItemSelectedListener(this);
 
 		final Spinner spinnerRepresentacion = (Spinner) rootView
 				.findViewById(R.id.spinnerrepresentacion);
-		ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
+		ArrayAdapter<CharSequence> adapterRepre = ArrayAdapter.createFromResource(
 				MainActivity.ctx, R.array.representaciones,
 				android.R.layout.simple_spinner_item);
-		spinnerRepresentacion.setAdapter(adapter3);
-		spinnerRepresentacion.setOnItemSelectedListener(this);
+		spinnerRepresentacion.setAdapter(adapterRepre);
+//		spinnerRepresentacion.setOnItemSelectedListener(this);
+		
+//  paneles--------------------------------------------------------------------		
+		
+		final Spinner spinnerPanel = (Spinner) rootView
+				.findViewById(R.id.spinnerPanel);
+		plc miplc=servidor.plcs.get(MainActivity.pagina);
+		ArrayList<String> items = new ArrayList<String>();
+		items.add("null");
+		for (int i = 0; i < miplc.paneles.size(); i++) {
+			String s=(String) miplc.paneles.get(i).titulo.getText().toString();
+			items.add(s);
+		}
+		final ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(
+				MainActivity.ctx, android.R.layout.simple_list_item_1, items);
+		spinnerPanel.setAdapter(adapter4);
+//		spinnerPanel.setOnItemSelectedListener(this);
+//-----------------------------------------------------------------------------------------
 
 		if (editando) {
 			// mivariable =
 			// servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
 			nombre.setText(mivariable.nombre);
 			posicion.setText(Integer.toString(mivariable.offset));
+			if ( mivariable.historial!=null)
 			historico.setText(Integer.toString(mivariable.historial.size()));
+			else
+				historico.setText("0");
+
 			plotlong.setText(Integer.toString(mivariable.plotlong));
+			max.setText(Double.toString(mivariable.max));
+			min.setText(Double.toString(mivariable.min));
+			magnitud.setText(mivariable.dim);
+			
 
 			spinnerTipo.setSelection(mivariable.tipoDato);
 			spinnerRango.setSelection(mivariable.rango);
+			spinnerRepresentacion.setSelection(mivariable.representacion);
+			spinnerPanel.setSelection(items.indexOf(mivariable.panel)+1);
+			
+			
 		} else
 			mivariable = new item();
 
@@ -128,7 +159,12 @@ public class editarVariables extends DialogFragment implements
 									.getText().toString());
 							mivariable.max= Double.parseDouble(min
 									.getText().toString());
-							mivariable.dim= magnitud.getText().toString();							
+							mivariable.dim= magnitud.getText().toString();
+							String panel =(String) spinnerPanel.getSelectedItem();
+							
+							if (panel.equals("null")) mivariable.panel="";
+							else mivariable.panel=panel;
+
 							if (Integer
 									.parseInt(historico.getText().toString()) > 0)
 								mivariable.historial = new libreria.historico(

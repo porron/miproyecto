@@ -250,8 +250,7 @@ public class MainActivity extends FragmentActivity {
 		
             return true;
         case R.id.menupanel:
-			editarVariables dia = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
-			dia.show(getSupportFragmentManager(), "crear");
+
 		
             return true;
 
@@ -506,8 +505,6 @@ public class MainActivity extends FragmentActivity {
 					xml.escribirXml(MainActivity.ctx);
 				return true;
 			case R.id.editpanel:
-				EditarPaneles dialogo = new EditarPaneles();
-				dialogo.show(getSupportFragmentManager(), "editar");
 				return true;
 
 			default:

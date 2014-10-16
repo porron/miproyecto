@@ -1,5 +1,7 @@
 package com.example.tabulado;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment;
@@ -9,24 +11,31 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NotificationCompat;
+//import android.support.v4.widget.SimpleCursorAdapter;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.ToggleButton;
-
 
 public class EditarPlc extends DialogFragment implements OnItemSelectedListener {
 
 	boolean editando;
 	plc miplc = null;
+	int panel_seleccionado=-1;
 
 	public EditarPlc(boolean edit) {
 		super();
@@ -35,6 +44,7 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+	
 		final AlertDialog.Builder builder = new AlertDialog.Builder(
 				getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -44,6 +54,82 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 		final EditText refresco = (EditText) rootView
 				.findViewById(R.id.eplcrefresco);
 		final EditText ip = (EditText) rootView.findViewById(R.id.eplcip);
+		
+		miplc=servidor.plcs.get(MainActivity.pagina);
+			
+		
+		ArrayList<String> items = new ArrayList<String>();
+		for (int i = 0; i < miplc.paneles.size(); i++) {
+			String s=(String) miplc.paneles.get(i).titulo.getText().toString();
+			items.add(s);
+		}
+		
+		
+//		final ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(
+//				MainActivity.ctx, android.R.layout.simple_list_item_1, items);
+		 ListView lpaneles = (ListView) rootView.findViewById(R.id.listView1);
+		
+		lpaneles.setAdapter(new ArrayAdapter<String>(MainActivity.ctx,
+				android.R.layout.simple_list_item_multiple_choice, items));
+			
+
+		lpaneles.setOnItemClickListener(new OnItemClickListener (){
+		     public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+		//         String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
+		    	 panel_seleccionado=myItemInt;
+		       }                 			
+		});
+		
+
+		
+		
+		ImageButton editar =(ImageButton)rootView.findViewById(R.id.edit_panel);
+		ImageButton crear =(ImageButton)rootView.findViewById(R.id.crear_panel);
+		ImageButton borrar =(ImageButton)rootView.findViewById(R.id.borrar_panel);
+		
+		editar.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+
+				EditarPaneles edpad = new EditarPaneles (servidor.plcs.get(MainActivity.pagina),panel_seleccionado,
+						true);
+				edpad.show(MainActivity.fragmentManager, "editar panel");
+				EditarPlc.this.getDialog().cancel();
+
+			}
+		});
+		
+		crear.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				EditarPaneles edpad = new EditarPaneles (servidor.plcs.get(MainActivity.pagina),panel_seleccionado,
+						false);
+				edpad.show(MainActivity.fragmentManager, "editar panel");
+				EditarPlc.this.getDialog().cancel();
+			}
+		});
+		
+		borrar.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String nombreAntiguo=servidor.plcs.get(MainActivity.pagina).paneles.get(panel_seleccionado).titulo.getText().toString();
+				servidor.plcs.get(MainActivity.pagina).paneles.remove(panel_seleccionado);
+				
+				for (int i = 0; i < servidor.plcs.get(MainActivity.pagina).variables.size(); i++) {
+					String n = servidor.plcs
+							.get(MainActivity.pagina).variables
+							.get(i).panel;
+					if (n.equals(nombreAntiguo))
+						servidor.plcs.get(MainActivity.pagina).variables.get(i).panel = "";
+				}
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+				
+				EditarPlc.this.getDialog().cancel();
+			}
+		});
+			
+	 	
 
 		ToggleButton toggle = (ToggleButton) rootView
 				.findViewById(R.id.toggleButton1);
@@ -88,8 +174,8 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 			nombre.setText(miplc.nombre);
 			refresco.setText(Integer.toString(miplc.refresco));
 			ip.setText(miplc.ip);
-//			ArrayList<item> variables = new ArrayList<item>();
-//			miplc.variables = variables;
+			// ArrayList<item> variables = new ArrayList<item>();
+			// miplc.variables = variables;
 
 		}
 		builder.setView(rootView);
@@ -173,13 +259,12 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 	public void onDismiss(DialogInterface dialog) {
 		if (miplc.variables.size() == 0) {
 			editarVariables dialogo2 = new editarVariables(null, miplc);
-//			FragmentManager fragmentManager = getSupportFragmentManager();
-//			dialogo2.show(fragmentManager, "Variables");
-		}
-		else{
-		//miplc.hilo_comunicacion.cancel(true);
-		//miplc.hilo_comunicacion = new comunicacion_asinc(miplc);
-		//miplc.hilo_comunicacion.start();
+			// FragmentManager fragmentManager = getSupportFragmentManager();
+			// dialogo2.show(fragmentManager, "Variables");
+		} else {
+			// miplc.hilo_comunicacion.cancel(true);
+			// miplc.hilo_comunicacion = new comunicacion_asinc(miplc);
+			// miplc.hilo_comunicacion.start();
 		}
 	}
 

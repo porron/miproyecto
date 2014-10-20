@@ -32,7 +32,6 @@ public class editarVariables extends DialogFragment implements
 	item mivariable = null;
 	plc miPlc;
 
-
 	public editarVariables(item variable, plc Plc) {
 
 		super();
@@ -47,8 +46,7 @@ public class editarVariables extends DialogFragment implements
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -63,58 +61,62 @@ public class editarVariables extends DialogFragment implements
 		final EditText plotlong = (EditText) rootView.findViewById(R.id.tlong);
 		final EditText max = (EditText) rootView.findViewById(R.id.editmax);
 		final EditText min = (EditText) rootView.findViewById(R.id.editmin);
-		final EditText magnitud = (EditText) rootView.findViewById(R.id.editmagnitud);
+		final EditText magnitud = (EditText) rootView
+				.findViewById(R.id.editmagnitud);
 
 		final Spinner spinnerTipo = (Spinner) rootView
 				.findViewById(R.id.spinnerTipo);
-		ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter.createFromResource(
-				MainActivity.ctx, R.array.tiposdato,
-				android.R.layout.simple_spinner_item);
-	//	adapterTipo.setDropDownViewResource(R.layout.layoutspiner);
+		ArrayAdapter<CharSequence> adapterTipo = ArrayAdapter
+				.createFromResource(MainActivity.ctx, R.array.tiposdato,
+						android.R.layout.simple_spinner_item);
+		// adapterTipo.setDropDownViewResource(R.layout.layoutspiner);
 
 		spinnerTipo.setAdapter(adapterTipo);
-//		spinnerTipo.setOnItemSelectedListener(this);
+		// spinnerTipo.setOnItemSelectedListener(this);
 
 		final Spinner spinnerRango = (Spinner) rootView
 				.findViewById(R.id.spinnerRango);
-		ArrayAdapter<CharSequence> adapterRango = ArrayAdapter.createFromResource(
-				MainActivity.ctx, R.array.rangos,
-				android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapterRango = ArrayAdapter
+				.createFromResource(MainActivity.ctx, R.array.rangos,
+						android.R.layout.simple_spinner_item);
 		spinnerRango.setAdapter(adapterRango);
-//		spinnerRango.setOnItemSelectedListener(this);
+		// spinnerRango.setOnItemSelectedListener(this);
 
 		final Spinner spinnerRepresentacion = (Spinner) rootView
 				.findViewById(R.id.spinnerrepresentacion);
-		ArrayAdapter<CharSequence> adapterRepre = ArrayAdapter.createFromResource(
-				MainActivity.ctx, R.array.representaciones,
-				android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapterRepre = ArrayAdapter
+				.createFromResource(MainActivity.ctx, R.array.representaciones,
+						android.R.layout.simple_spinner_item);
 		spinnerRepresentacion.setAdapter(adapterRepre);
-//		spinnerRepresentacion.setOnItemSelectedListener(this);
-		
-//  paneles--------------------------------------------------------------------		
-		
+		// spinnerRepresentacion.setOnItemSelectedListener(this);
+
+		// paneles--------------------------------------------------------------------
+
 		final Spinner spinnerPanel = (Spinner) rootView
 				.findViewById(R.id.spinnerPanel);
-		plc miplc=servidor.plcs.get(MainActivity.pagina);
+		plc miplc = servidor.plcs.get(MainActivity.pagina);
 		ArrayList<String> items = new ArrayList<String>();
-		items.add("null");
+		items.add("");
 		for (int i = 0; i < miplc.paneles.size(); i++) {
-			String s=(String) miplc.paneles.get(i).titulo.getText().toString();
+			String s = (String) miplc.paneles.get(i).titulo.getText()
+					.toString();
 			items.add(s);
 		}
 		final ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(
 				MainActivity.ctx, android.R.layout.simple_list_item_1, items);
 		spinnerPanel.setAdapter(adapter4);
-//		spinnerPanel.setOnItemSelectedListener(this);
-//-----------------------------------------------------------------------------------------
+		// spinnerPanel.setOnItemSelectedListener(this);
+		// -----------------------------------------------------------------------------------------
 
 		if (editando) {
-			// mivariable =
-			// servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
+//			 mivariable =
+//			 servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
 			nombre.setText(mivariable.nombre);
 			posicion.setText(Integer.toString(mivariable.offset));
-			if ( mivariable.historial!=null)
-			historico.setText(Integer.toString(mivariable.historial.size()));
+
+			if (mivariable.historial != null)
+				historico
+						.setText(Integer.toString(mivariable.historial.size()));
 			else
 				historico.setText("0");
 
@@ -122,14 +124,13 @@ public class editarVariables extends DialogFragment implements
 			max.setText(Double.toString(mivariable.max));
 			min.setText(Double.toString(mivariable.min));
 			magnitud.setText(mivariable.dim);
-			
 
 			spinnerTipo.setSelection(mivariable.tipoDato);
 			spinnerRango.setSelection(mivariable.rango);
 			spinnerRepresentacion.setSelection(mivariable.representacion);
-			spinnerPanel.setSelection(items.indexOf(mivariable.panel)+1);
-			
-			
+
+			spinnerPanel.setSelection(items.indexOf(mivariable.panel));
+
 		} else
 			mivariable = new item();
 
@@ -140,7 +141,8 @@ public class editarVariables extends DialogFragment implements
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
-						if (validarNombre(nombre.getText().toString())) {
+						if (editando
+								|| validarNombre(nombre.getText().toString())) {
 
 							mivariable.nombre = nombre.getText().toString();
 							mivariable.offset = Integer.parseInt(posicion
@@ -155,15 +157,17 @@ public class editarVariables extends DialogFragment implements
 									.getText().toString());
 							mivariable.granulado = Double.parseDouble(posicion
 									.getText().toString());
-							mivariable.max= Double.parseDouble(max
-									.getText().toString());
-							mivariable.max= Double.parseDouble(min
-									.getText().toString());
-							mivariable.dim= magnitud.getText().toString();
-							String panel =(String) spinnerPanel.getSelectedItem();
-							
-							if (panel.equals("null")) mivariable.panel="";
-							else mivariable.panel=panel;
+							mivariable.max = Double.parseDouble(max.getText()
+									.toString());
+							mivariable.max = Double.parseDouble(min.getText()
+									.toString());
+							mivariable.dim = magnitud.getText().toString();
+							String panel = (String) spinnerPanel
+									.getSelectedItem();
+
+							// if (panel.equals("null")) mivariable.panel="";
+							// else mivariable.panel=panel;
+							mivariable.panel = panel;
 
 							if (Integer
 									.parseInt(historico.getText().toString()) > 0)
@@ -191,58 +195,6 @@ public class editarVariables extends DialogFragment implements
 						editarVariables.this.getDialog().cancel();
 					}
 				});
-		if (!editando)
-			builder.setNeutralButton(R.string.anadir,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-
-							if (validarNombre(nombre.getText().toString())) {
-
-								mivariable.nombre = nombre.getText().toString();
-								mivariable.offset = Integer.parseInt(posicion
-										.getText().toString());
-								mivariable.tipoDato = (int) spinnerTipo
-										.getSelectedItemId();
-								mivariable.rango = (int) spinnerRango
-										.getSelectedItemId();
-								mivariable.representacion = (int) spinnerRango
-										.getSelectedItemId();
-								mivariable.plotlong = Integer.parseInt(posicion
-										.getText().toString());
-								mivariable.granulado = Double
-										.parseDouble(posicion.getText()
-												.toString());
-								mivariable.max= Double.parseDouble(max
-										.getText().toString());
-								mivariable.max= Double.parseDouble(min
-										.getText().toString());
-								mivariable.dim= magnitud.getText().toString();
-
-								if (Integer.parseInt(historico.getText()
-										.toString()) > 0)
-									mivariable.historial = new libreria.historico(
-											Integer.parseInt(historico
-													.getText().toString()));
-
-								miPlc.variables.add(mivariable);
-								nombre.setText(null);
-								posicion.setText(null);
-								spinnerTipo.setSelection(0);
-								Context context = MainActivity.ctx;
-								CharSequence text = "Variable añadida. Debe aun guardar al finalizar pulsando 'Aceptar'";
-								int duration = Toast.LENGTH_SHORT;
-
-								Toast toast = Toast.makeText(context, text,
-										duration);
-								toast.show();
-								editarVariables.this.getDialog().show();
-							} else {
-								Toast toast = Toast.makeText(MainActivity.ctx,
-										"El nombre de la variable ya existe",
-										Toast.LENGTH_SHORT);
-							}
-						}
-					});
 
 		posicion.addTextChangedListener(new TextWatcher() {
 			private void handleText() {
@@ -275,40 +227,44 @@ public class editarVariables extends DialogFragment implements
 			}
 		});
 
-		nombre.addTextChangedListener(new TextWatcher() {
-			private void handleText() {
-				// Grab the button
-				final Button okButton = ((AlertDialog) editarVariables.this
-						.getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
-				if (nombre.getText().length() == 0
-						| posicion.getText().length() == 0) {
-					okButton.setEnabled(false);
-				} else {
-					okButton.setEnabled(true);
+		if (!editando){
+			nombre.addTextChangedListener(new TextWatcher() {
+				private void handleText() {
+					// Grab the button
+					final Button okButton = ((AlertDialog) editarVariables.this
+							.getDialog())
+							.getButton(AlertDialog.BUTTON_POSITIVE);
+					if (nombre.getText().length() == 0
+							| posicion.getText().length() == 0) {
+						okButton.setEnabled(false);
+					} else {
+						okButton.setEnabled(true);
+					}
 				}
-			}
 
-			@Override
-			public void afterTextChanged(Editable arg0) {
-				handleText();
-			}
+				@Override
+				public void afterTextChanged(Editable arg0) {
+					handleText();
+				}
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// Nothing to do
-			}
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+					// Nothing to do
+				}
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// Nothing to do
-			}
-		});
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+					// Nothing to do
+				}
+			});
+		}
 		AlertDialog b = builder.create();
 		b.show();
 		Button okButton = b.getButton(AlertDialog.BUTTON_POSITIVE);
-		okButton.setEnabled(false);
+		if (!editando)
+			okButton.setEnabled(false);
 
 		return b;
 	}
@@ -348,6 +304,5 @@ public class editarVariables extends DialogFragment implements
 		;
 		return noencontrado;
 	}
-
 
 }

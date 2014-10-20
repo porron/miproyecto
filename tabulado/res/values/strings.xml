@@ -60,5 +60,8 @@
     <string name="bajar">bajar variable</string>
     <string name="editpanel">editar panel</string>
     <string name="menupanel">Paneles</string>
+    <string name="Alarmas">botonAlarmas</string>
+    <string name="botonVariables">Variables</string>
+    <string name="botonAlarmas">Alarmas</string>
 
 </resources>

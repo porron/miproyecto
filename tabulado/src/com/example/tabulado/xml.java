@@ -112,6 +112,8 @@ public class xml {
 	}
 
 	public static Element generarPlc(plc miplc) {
+		
+// forma el xml para escribirlo
 
 		item mi;
 		alarma ma;
@@ -225,8 +227,7 @@ public class xml {
 			variable.tipoDato = Integer.parseInt(el.getAttribute("tipo"));
 			variable.granulado = Double.parseDouble(el
 					.getAttribute("granulado"));
-			// variable.settipoDato(Integer.parseInt(el.getAttribute("tipoDato")));
-			// variable.origen=Integer.parseInt(el.getAttribute("origen"));
+
 
 			variable.representacion = Integer.parseInt(el
 					.getAttribute("representacion"));
@@ -257,6 +258,9 @@ public class xml {
 			if (el.getAttribute("dim")!= null && !el.getAttribute("dim").equals("")) {
 				variable.dim = el.getAttribute("dim");
 			}
+			if (el.getAttribute("panel")!= null && !el.getAttribute("panel").equals("")) {
+				variable.panel = el.getAttribute("panel");
+			}
 
 			// variable.representacion=el.getAttribute("representacion");
 			variables.add(variable);
@@ -281,6 +285,7 @@ public class xml {
 			Element el = (Element) nl.item(i);
 			String titulo = el.getAttribute("titulo");
 			panel mipanel = new panel(MainActivity.ctx);
+			mipanel.tiltular(titulo);
 			paneles.add(mipanel);
 		}
 		miplc.paneles = paneles;

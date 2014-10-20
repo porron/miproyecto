@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 public class panel extends LinearLayout {
-	TextView titulo;
+	public TextView titulo;
 	LinearLayout cinta;
 	public panel(Context context) {
 
@@ -25,10 +25,10 @@ public class panel extends LinearLayout {
 		cinta.setOrientation(HORIZONTAL);
 		
 	}
-	void tiltular (String tit){
+	public void tiltular (String tit){
 		this.titulo.setText(tit);
 	}
-	void meter(View v){
+	public void meter(View v){
 		cinta.addView(v);
 	}
 

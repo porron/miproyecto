@@ -56,13 +56,14 @@
         </TableRow>
     </TableLayout>
 
-    <TextView
-        android:id="@+id/titulo"
+    <Button
+        android:id="@+id/botonAlarmas"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#999999"
-        android:text="Alarmas"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="32dp"
+        android:layout_gravity="fill_horizontal"
+        android:layout_weight="0.0"
+        android:text="@string/botonAlarmas" />
 
     <ListView
         android:id="@+id/listAlarmas"
@@ -71,13 +72,12 @@
         tools:listitem="@android:layout/simple_list_item_1" >
     </ListView>
 
-    <TextView
-        android:id="@+id/textView4"
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#999999"
-        android:text="Variables"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="32dp"
+        android:text="@string/botonVariables" />
 
     <ListView
         android:id="@+id/listVariables"

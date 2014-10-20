@@ -26,12 +26,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +42,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -169,33 +174,7 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_editar:
-			
-	/*		ColorSelectDialog dc=new ColorSelectDialog(ctx, new OnColorChangedListener() {
-		        @Override
-		        public void onOk(ColorSelectDialog dialog, int color) {
-		                // color is the color selected by the user.
-		        }
-		                
-		        @Override
-		        public void onCancel(ColorSelectDialog dialog) {
-		                // cancel was selected by the user
-		        }}, "ola", 0);
-			dc.show();
-	*/		
-	/*		AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, 0xff0000ff, new OnAmbilWarnaListener() {
-		        @Override
-		        public void onOk(AmbilWarnaDialog dialog, int color) {
-		                // color is the color selected by the user.
-		        }	                
-		        @Override
-		        public void onCancel(AmbilWarnaDialog dialog) {
-		                // cancel was selected by the user
-		        }
-		});
-
-		dialog.show();
-	*/		
+		case R.id.menu_editar:	
 			EditarPlc dialogo = new EditarPlc(true);
 			dialogo.show(fragmentManager, "crear Plc");
 			return true;			
@@ -326,6 +305,24 @@ public class MainActivity extends FragmentActivity {
 			TextView textoip = (TextView) rootView.findViewById(R.id.textoip);
 			textoip.setFocusable(false);
 			TextView textorefresco = (TextView) rootView.findViewById(R.id.textorefresco);
+			
+			Button botonAlarmas = new Button(MainActivity.ctx);
+			botonAlarmas.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					EditarAlarmas Crearalarma = new EditarAlarmas(null,servidor.plcs.get(MainActivity.pagina));
+					Crearalarma.show(getSupportFragmentManager(), "editar");
+				
+				}
+			});
+
+			Button botonVariables = new Button(MainActivity.ctx);
+			botonVariables.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					editarVariables dialogo = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
+					dialogo.show(getSupportFragmentManager(), "crear");
+				}
+			});
+
 			textorefresco.setFocusable(false);
 			textoip.setText(mp.ip);
 			textorefresco.setText(Integer.toString(mp.refresco));
@@ -335,11 +332,14 @@ public class MainActivity extends FragmentActivity {
 			ListView listaAlarmas = (ListView) rootView
 					.findViewById(R.id.listAlarmas);
 
-
+			registerForContextMenu(listaVariables);
+			registerForContextMenu(listaAlarmas);
+			
+			
 			variableadapter va = new variableadapter(ctx, R.layout.variables2,mp.variables);
 			listaVariables.setAdapter(va);
 			listaVariables.setItemsCanFocus(true);
-
+/*
 			listaVariables.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 						// Called when the user long-clicks on someView
 						public boolean onItemLongClick(AdapterView parent,
@@ -355,11 +355,11 @@ public class MainActivity extends FragmentActivity {
 							return true;
 						}
 					});
-		
+*/		
 			String[] items = alarma.rellenar_lista(mp);
 			ArrayAdapter<String> alarmasAdapter = new ArrayAdapter <String>(ctx, android.R.layout.simple_list_item_1, items);
 			listaAlarmas.setAdapter(alarmasAdapter);
-			
+/*			
 			listaAlarmas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				// Called when the user long-clicks on someView
 				public boolean onItemLongClick(AdapterView parent,
@@ -376,7 +376,7 @@ public class MainActivity extends FragmentActivity {
 				}
 			});
 
-
+*/
 			return rootView;
 		}
 	}
@@ -436,18 +436,7 @@ public class MainActivity extends FragmentActivity {
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			
 			switch (item.getItemId()) {
-			case R.id.item1:
-				pagina = mViewPager.getCurrentItem();
-				if (clickvariable) {
-					editarVariables dialogo = new editarVariables(null,servidor.plcs.get(MainActivity.pagina));
-					dialogo.show(getSupportFragmentManager(), "crear");
-				}
-				else {
-					EditarAlarmas dialogo =new EditarAlarmas (null,servidor.plcs.get(MainActivity.pagina));
-					dialogo.show(getSupportFragmentManager(), "crear");
-				}
-								
-				return true;
+
 			case R.id.item3:
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						ctx);
@@ -504,8 +493,6 @@ public class MainActivity extends FragmentActivity {
 					xml.generarServidor();
 					xml.escribirXml(MainActivity.ctx);
 				return true;
-			case R.id.editpanel:
-				return true;
 
 			default:
 				return false;
@@ -518,9 +505,90 @@ public class MainActivity extends FragmentActivity {
 			mActionMode = null;
 		}
 	};
+	
+	
+	
+	
+	public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_variables, menu);
+		if(v.getId() == R.id.listVariables) clickvariable=true;
+		else clickvariable=true;
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+		indvariable = info.position;
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	 
+	    switch (item.getItemId()) {
+		case R.id.item3:
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+					ctx);
+			alertDialogBuilder.setTitle("Atencion");
+			alertDialogBuilder
+					.setMessage("Va a eliminar una variable!")
+					.setCancelable(false)
+					.setPositiveButton("Aceptar",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									servidor.plcs.get(MainActivity.pagina).variables
+											.remove(MainActivity.indvariable);
+									xml.generarServidor();
+									dialog.cancel();
+								};
+							})
+					.setNegativeButton("Cancelar",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+			AlertDialog alertDialog = alertDialogBuilder.create();
+			alertDialog.show();
+
+			return true;
+		case R.id.item2:
+			// shareCurrentItem();
+			pagina = mViewPager.getCurrentItem();
+			if (clickvariable) {
+			item variable = servidor.plcs.get(MainActivity.pagina).variables
+					.get(MainActivity.indvariable);
+			editarVariables dialogo = new editarVariables(variable,
+					servidor.plcs.get(MainActivity.pagina));
+			dialogo.show(getSupportFragmentManager(), "editar");
+			}
+			else{
+				alarma mialarma = servidor.plcs.get(MainActivity.pagina).ListaAlarmas.get(MainActivity.indalarma);
+				EditarAlarmas dialogo = new EditarAlarmas(mialarma,servidor.plcs.get(MainActivity.pagina));
+				dialogo.show(getSupportFragmentManager(), "editar");	
+			}
+			return true;
+			
+		case R.id.subir:
+			 java.util.Collections.swap(servidor.plcs.get(MainActivity.pagina).variables,MainActivity.indvariable,MainActivity.indvariable-1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			return true;
+		case R.id.bajar:
+			 java.util.Collections.swap(servidor.plcs.get(MainActivity.pagina).variables,MainActivity.indvariable,MainActivity.indvariable+1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			return true;
+        default:
+            return super.onContextItemSelected(item);
+		}
+	}
+	}
 
 
 
 
 
-}
+

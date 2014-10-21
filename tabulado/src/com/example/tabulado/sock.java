@@ -13,7 +13,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.w3c.dom.Element;
 
-
 import libreria.historico;
 import libreria.item;
 import libreria.paquete;
@@ -26,9 +25,7 @@ import android.widget.Toast;
 
 public class sock extends AsyncTask<Void, Integer, Void> {
 
-	
-	
-//	public ArrayBlockingQueue<item> cola_de_salida ;
+	// public ArrayBlockingQueue<item> cola_de_salida ;
 	@Override
 	protected Void doInBackground(Void... params) {
 		MainActivity.misocket = null;
@@ -39,10 +36,10 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 		try {
 			android.os.Debug.waitForDebugger();
 			publishProgress(10);
-	
+
 			Log.e("sock", "arranco el thread ");
-			
-//			cola_de_salida = new ArrayBlockingQueue<item>(10);
+
+			// cola_de_salida = new ArrayBlockingQueue<item>(10);
 			MainActivity.misocket = new Socket(MainActivity.dir_espejo, 4444);
 			// MainActivity.misocket = new Socket("192.168.1.10", 4444);
 			// MainActivity.misocket = new Socket("87.216.111.185", 4444);
@@ -56,21 +53,21 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 			MainActivity.in = new ObjectInputStream(buffer);
 			String nomf = String.format("%-50s", MainActivity.nombre_servidor);
 			String passf = String.format("%-10s", MainActivity.pass_servidor);
-			mipaquete = new paquete(true, 11, "espejo", 0.0, 0, 0L, null,
-					nomf + passf);
+			mipaquete = new paquete(true, 11, "espejo", 0.0, 0, 0L, null, nomf
+					+ passf);
 			MainActivity.out.writeObject(mipaquete);
 			MainActivity.out.flush();
 			publishProgress(11);
-			
-			escribe_socket escritor =new escribe_socket();
+
+			escribe_socket escritor = new escribe_socket();
 			escritor.start();
 			while (true) {
 				mipaquete = (paquete) MainActivity.in.readObject();
-				procesar (mipaquete);
+				procesar(mipaquete);
 			}
 		} catch (IOException e) {
 			Log.e("conexion", "no conecta :" + e.getMessage());
-	//		System.err.println("no conecta :" + e.getMessage());
+			// System.err.println("no conecta :" + e.getMessage());
 			publishProgress(13);
 			System.exit(1);
 			publishProgress(mipaquete.tipo);
@@ -86,19 +83,19 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 		switch (tipo) {
 		case 10:
 			Log.e("sock", "servidor recibe 11 ");
-			toast = Toast.makeText(MainActivity.ctx, "espejo "+MainActivity.dir_espejo,
-					Toast.LENGTH_SHORT);
+			toast = Toast.makeText(MainActivity.ctx, "espejo "
+					+ MainActivity.dir_espejo, Toast.LENGTH_SHORT);
 			toast.show();
 			break;
 		case 11:
-				Log.e("sock", "servidor recibe 11 ");
-				toast = Toast.makeText(MainActivity.ctx, "solicitando conexion",
-						Toast.LENGTH_SHORT);
-				toast.show();
-				break;
+			Log.e("sock", "servidor recibe 11 ");
+			toast = Toast.makeText(MainActivity.ctx, "solicitando conexion",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			break;
 		case 12:
 			Log.e("sock", "servidor recibe 12");
-			
+
 			toast = Toast.makeText(MainActivity.ctx, "conectado",
 					Toast.LENGTH_SHORT);
 			toast.show();
@@ -118,7 +115,6 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 			toast.show();
 			break;
 
-			
 		default:
 			break;
 		}
@@ -134,23 +130,24 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 			for (int i = 0; i < miplc.variables.size(); i++) {
 				mi = (item) miplc.variables.get(i);
 
-				if (mi.valor != null) {
-					try {
-						mipaquete = new paquete(true, 2, mi.nombre,mi.valor.doubleValue(), mi.calidad, mi.tiempo.getTime(),
-								null, null);
+				try {
+					mipaquete = new paquete(true, 2, mi.nombre,
+							mi.valor, mi.calidad,
+							mi.tiempo.getTime(), null, null);
+					MainActivity.out.writeObject(mipaquete);
+					MainActivity.out.flush();
+					Log.e("sock", "envio 2 ");
+					if (mi.historial != null) {
+						mipaquete = new paquete(true, 3, mi.nombre, 0.0, 0, 0L,
+								mi.historial, null);
 						MainActivity.out.writeObject(mipaquete);
 						MainActivity.out.flush();
-						Log.e("sock", "envio 2 ");
-						if ( mi.historial!=null){
-							mipaquete = new paquete(true, 3, mi.nombre,0.0, 0,0L,mi.historial,null);
-							MainActivity.out.writeObject(mipaquete);
-							MainActivity.out.flush();
-						}
-
-					} catch (IOException e) {
-						Log.e("sock", e.getMessage());
 					}
+
+				} catch (IOException e) {
+					Log.e("sock", e.getMessage());
 				}
+
 			}
 			/*
 			 * for (int i = 0; i < miplc.ListaAlarmas.size(); i++) { ma =
@@ -161,33 +158,32 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 			 * e.getMessage()); } }
 			 */
 		}
-		mipaquete = new paquete(true, 9, null, 0.0, 0,0L, null, null);
+		mipaquete = new paquete(true, 9, null, 0.0, 0, 0L, null, null);
 		try {
 			MainActivity.out.writeObject(mipaquete);
 			MainActivity.out.flush();
 			Log.e("sock", "termino el envio de datos ");
-			MainActivity.cliente_conectado=true;
+			MainActivity.cliente_conectado = true;
 		} catch (IOException e) {
 			Log.e("sock", e.getMessage());
 		}
 	}
-	
-	
-	void procesar (paquete paq) {
+
+	void procesar(paquete paq) {
 
 		switch (paq.tipo) {
-		
+
 		// peticion de datos desde un cliente
 		case 1:
 			Log.e("sock", "servidor recibe 1 ");
-	//		escribe_socket.salida_permitida=false;
-			String s=xml.toString(xml.documentoXML);
+			// escribe_socket.salida_permitida=false;
+			String s = xml.toString(xml.documentoXML);
 			Log.e("sock", "creo el xml");
 
-			paquete mipaquete = new paquete(true, 1, MainActivity.nombre_servidor, 0.0, 0,
-					0L, null, s);
+			paquete mipaquete = new paquete(true, 1,
+					MainActivity.nombre_servidor, 0.0, 0, 0L, null, s);
 			Log.e("sock", "creo el paquete");
-			
+
 			try {
 				MainActivity.out.writeObject(mipaquete);
 				Log.e("sock", "mando el paquete");
@@ -198,31 +194,31 @@ public class sock extends AsyncTask<Void, Integer, Void> {
 				Log.e("sock", e.getMessage());
 			}
 			enviar_servidor();
-	//		escribe_socket.salida_permitida=true;
+			// escribe_socket.salida_permitida=true;
 			break;
-			
-			// recepsion de cambio de variable
+
+		// recepsion de cambio de variable
 		case 2:
 			Log.e("sock", "servidor recibe 2 ");
-			int idplc=servidor.plcDeVariable (paq.nombre);
-			servidor.plcs.get(idplc).ListaEscribir.add(new variableEscribir(paq.nombre, paq.valor));
+			int idplc = servidor.plcDeVariable(paq.nombre);
+			servidor.plcs.get(idplc).ListaEscribir.add(new variableEscribir(
+					paq.nombre, paq.valor));
 			break;
-			
 
-			// conexion a espejo aceptada
+		// conexion a espejo aceptada
 		case 12:
 			publishProgress(12);
 			break;
 
-			// conexion a espejo rechazada
+		// conexion a espejo rechazada
 		case 13:
 			publishProgress(13);
 			break;
-			
-			// no hay socket para el cliente en el espejo
+
+		// no hay socket para el cliente en el espejo
 		case 15:
 			publishProgress(15);
-			MainActivity.cliente_conectado=false;
+			MainActivity.cliente_conectado = false;
 			break;
 
 		default:

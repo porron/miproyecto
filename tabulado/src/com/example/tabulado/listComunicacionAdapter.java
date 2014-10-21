@@ -57,10 +57,9 @@ public class listComunicacionAdapter extends ArrayAdapter<item>{
             
    
             TextView tipo = viewCache.getTipo(resource);
-            Double d = ((Number)variable.valor).doubleValue();
-       //     if (variable.valor != null) tipo.setText(Double.toString((Double)variable.valor));
-            if (variable.valor != null) tipo.setText(d.toString());
-                 
+      //     if (variable.valor != null) tipo.setText(Double.toString((Double)variable.valor));
+            tipo.setText(Double.toString(variable.valor));
+            
             TextView posicion = viewCache.getPosicion(resource);
             if (variable.calidad != 0) posicion.setText(Integer.toString(variable.calidad));
             

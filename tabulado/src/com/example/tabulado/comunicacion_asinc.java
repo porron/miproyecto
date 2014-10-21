@@ -103,27 +103,20 @@ import android.support.v4.app.DialogFragment;
 
 				BatchResults<String> br = master.send(batch);
 				date = new Date();
-				boolean actualizar = false;
 
 				for (int i = 0; i < miPlc.variables.size(); i++) {
 					item variable = (item) miPlc.variables.get(i);
-					Number mivalor;
-					mivalor = (Number) br.getValue(variable.nombre);
-					actualizar = false;
-					if (variable.valor == null)
-						actualizar = true;
-					else if (Math.abs(variable.valor.doubleValue()
-							- mivalor.doubleValue()) >= variable.granulado
-							.doubleValue())
-						actualizar = true;
-
-					if (actualizar) {
+					Number d =(Number) br.getValue(variable.nombre);
+					double mivalor = d.doubleValue();
+					variable.calidad=1;
+					double dd= Math.abs(variable.valor- mivalor);
+					if (dd >= variable.granulado) {
 						// Log.e("conexion", "detecta actualizar ");
 						variable.valor = mivalor;
 						variable.tiempo = date;
 						if (variable.historial != null) {
 							ItemHistorico mitem = new ItemHistorico(
-									variable.valor.doubleValue(), variable.tiempo);
+									variable.valor, variable.tiempo);
 							variable.historial.meter(mitem);
 
 						}
@@ -131,7 +124,7 @@ import android.support.v4.app.DialogFragment;
 						variable.hayquepintar = true;
 						if (MainActivity.cliente_conectado) {
 							mipaquete = new paquete(true, 2, variable.nombre,
-									variable.valor.doubleValue(),
+									variable.valor,
 									variable.calidad,
 									variable.tiempo.getTime(), null, null);
 							escribe_socket.buffer_salida.put(mipaquete);

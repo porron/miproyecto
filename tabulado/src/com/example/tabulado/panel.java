@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 public class panel extends LinearLayout {
 	public TextView titulo;
+	public boolean colocado;
 	LinearLayout cinta;
 	public panel(Context context) {
 
@@ -23,6 +24,7 @@ public class panel extends LinearLayout {
 		titulo.setTextSize(12f);
 		this.setBackground(getResources().getDrawable(R.drawable.panel));
 		cinta.setOrientation(HORIZONTAL);
+		colocado=false;
 		
 	}
 	public void tiltular (String tit){

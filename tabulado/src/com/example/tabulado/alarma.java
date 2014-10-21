@@ -46,19 +46,19 @@ public class alarma {
 			switch (operador) {
 
 			case 1:
-				valor = dato1.valor.doubleValue() > dato2.valor.doubleValue();
+				valor = dato1.valor > dato2.valor;
 				break;
 			case 2:
-				valor = dato1.valor.doubleValue() >= dato2.valor.doubleValue();
+				valor = dato1.valor>= dato2.valor;
 				break;
 			case 3:
-				valor = dato1.valor.doubleValue() < dato2.valor.doubleValue();
+				valor = dato1.valor < dato2.valor;
 				break;
 			case 4:
-				valor = dato1.valor.doubleValue() <= dato2.valor.doubleValue();
+				valor = dato1.valor <= dato2.valor;
 				break;
 			case 5:
-				valor = dato1.valor.doubleValue() == dato2.valor.doubleValue();
+				valor = dato1.valor == dato2.valor;
 				break;
 			default:
 				break;

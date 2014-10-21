@@ -37,8 +37,9 @@
     </string-array>
     
     <string-array name="representaciones">      
+		<item>Sin representacion</item>
 		<item>Barra deslizable</item>
-        <item>Texto</item>
+		<item>Texto</item>
         <item>Texto editable</item>
         <item>Boton</item>
         <item>Grafico</item>

@@ -128,7 +128,6 @@ public class editarVariables extends DialogFragment implements
 			spinnerTipo.setSelection(mivariable.tipoDato);
 			spinnerRango.setSelection(mivariable.rango);
 			spinnerRepresentacion.setSelection(mivariable.representacion);
-
 			spinnerPanel.setSelection(items.indexOf(mivariable.panel));
 
 		} else
@@ -151,7 +150,7 @@ public class editarVariables extends DialogFragment implements
 									.getSelectedItemId();
 							mivariable.rango = (int) spinnerRango
 									.getSelectedItemId();
-							mivariable.representacion = (int) spinnerRango
+							mivariable.representacion = (int) spinnerRepresentacion
 									.getSelectedItemId();
 							mivariable.plotlong = Integer.parseInt(posicion
 									.getText().toString());
@@ -159,7 +158,7 @@ public class editarVariables extends DialogFragment implements
 									.getText().toString());
 							mivariable.max = Double.parseDouble(max.getText()
 									.toString());
-							mivariable.max = Double.parseDouble(min.getText()
+							mivariable.min = Double.parseDouble(min.getText()
 									.toString());
 							mivariable.dim = magnitud.getText().toString();
 							String panel = (String) spinnerPanel

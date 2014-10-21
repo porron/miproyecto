@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    
-    <string-array name="representaciones">      
-		<item>Seek bar</item>
-        <item>Text</item>
-        <item>Edit text</item>
-        <item>Button</item>
-        <item>Plot</item>
-    </string-array>
+
     
     <string name="lvariables">Lista de variables</string>
     <string name="alerta_plc">Se ha roto la conexion con el plc</string>

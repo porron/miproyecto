@@ -1,6 +1,7 @@
 package com.example.tabulado;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import libreria.item;
@@ -43,8 +44,6 @@ public class dibuja extends View {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 	public static LinearLayout rellena(plc mp) {
 
@@ -52,35 +51,31 @@ public class dibuja extends View {
 		LinearLayout milayout = new LinearLayout(MainActivity.ctx);
 		// final List <item> lasvariables = new ArrayList () ;
 		milayout.setOrientation(LinearLayout.VERTICAL);
-		panel mipanel= new panel(MainActivity.ctx);
-		mipanel.tiltular("gagagagaag");
-		milayout.addView(mipanel);
-		
+
 		for (int i = 0; i < mp.variables.size(); i++) {
 
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams( LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-			
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 			item variable = (item) mp.variables.get(i);
-//			if (variable.valor != null) {
 			LinearLayout mil = new LinearLayout(MainActivity.ctx);
 			TextView t = new TextView(MainActivity.ctx);
 			switch (variable.representacion) {
 
 			case 4:// boton
 
-		//		mil.setOrientation(LinearLayout.HORIZONTAL);
-		//		t.setText(variable.nombre);
+				// mil.setOrientation(LinearLayout.HORIZONTAL);
+				// t.setText(variable.nombre);
 				final Number valor = variable.valor;
 				ToggleButton b = new ToggleButton(MainActivity.ctx);
 				b.setId(i);
 				b.setText(variable.nombre);
 				b.setGravity(Gravity.RIGHT);
-//				b.setLayoutParams(LinearLayout.)
-				Drawable myI = MainActivity.ctx.getResources().getDrawable(android.R.drawable.button_onoff_indicator_off);
-				b.setBackground(myI);
+				// b.setLayoutParams(LinearLayout.)
+				// Drawable myI = MainActivity.ctx.getResources().getDrawable(
+				// android.R.drawable.button_onoff_indicator_off);
+				// b.setBackground(myI);
 
-				
 				botones.put(b.getId(), variable.nombre);
 				b.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -98,109 +93,116 @@ public class dibuja extends View {
 						}
 					}
 				});
-		//		mil.addView(t);
-		//		mil.addView(b);
-				mipanel.meter(b);
+				mil.addView(b);
+				mil.setLayoutParams(lp);
 				variable.view = b;
 
 				break;
-			case 2://texto
+			case 2:// texto
 
 				// mil.setOrientation(LinearLayout.HORIZONTAL);
 				// t.setText(variable.nombre);
 				TextView valor1 = new TextView(MainActivity.ctx);
-				
-				if (variable.valor != null)
-					valor1.setText(variable.nombre + "kkkk   "
-							+ variable.valor.toString());
+
+				// if (variable.valor != null)
+				valor1.setText(variable.nombre + "kkkk   " + variable.valor);
 				// mil.addView(t);
 				// mil.addView(valor1);
-			//	milayout.addView(valor1);
-				mipanel.meter(valor1);
-				milayout.setLayoutParams(lp);
+				// milayout.addView(valor1);
+				mil.addView(valor1);
+				mil.setLayoutParams(lp);
 				variable.view = valor1;
 
 				break;
-			case 3://editable
+			case 3:// editable
 				mil.setOrientation(LinearLayout.HORIZONTAL);
 				t.setText(variable.nombre);
-				t.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 40f));
+				t.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						40f));
 
 				final EditText valorEdit = new EditText(MainActivity.ctx);
-				valorEdit.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 50f));
-				
-//				valorEdit.setMinimumWidth(200);
+				valorEdit.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						50f));
+
+				// valorEdit.setMinimumWidth(200);
 
 				Button aceptar = new Button(MainActivity.ctx);
 				aceptar.setId(i);
 				Resources res = MainActivity.ctx.getResources();
 				Drawable myImage = res.getDrawable(android.R.drawable.btn_star);
 				aceptar.setBackground(myImage);
-				aceptar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 10f));
+				aceptar.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						10f));
 
 				botones.put(aceptar.getId(), variable.nombre);
 				aceptar.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						if (!(valorEdit.getText().equals(""))) {
-						int n = v.getId();
-						double valor = Double.parseDouble(valorEdit.getText()
-								.toString());
-						String nombre = botones.get(n);
-						int pagina = MainActivity.mViewPager.getCurrentItem();
-						servidor.plcs.get(pagina).ListaEscribir.add(new variableEscribir(nombre, valor));
-						}
-						else {
-							Toast toast = Toast.makeText(MainActivity.ctx, "Debe escribir un valor",
+							int n = v.getId();
+							double valor = Double.parseDouble(valorEdit
+									.getText().toString());
+							String nombre = botones.get(n);
+							int pagina = MainActivity.mViewPager
+									.getCurrentItem();
+							servidor.plcs.get(pagina).ListaEscribir
+									.add(new variableEscribir(nombre, valor));
+						} else {
+							Toast toast = Toast.makeText(MainActivity.ctx,
+									"Debe escribir un valor",
 									Toast.LENGTH_SHORT);
 						}
-				//		 MainActivity.mViewPager.getWindowToken().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-									}
+						// MainActivity.mViewPager.getWindowToken().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+					}
 				});
 
 				mil.addView(t);
 				mil.addView(valorEdit);
 				mil.addView(aceptar);
-				milayout.addView(mil);
-				milayout.setLayoutParams(lp);
+				mil.setLayoutParams(lp);
 				variable.view = valorEdit;
 
 				break;
-			case 1://barra deslizable
-				  final String varnom =variable.nombre;
+			case 1:// barra deslizable
+				final String varnom = variable.nombre;
 
-				  final TextView consigna = new  TextView(MainActivity.ctx);
-				  consigna.setText(variable.valor.toString());
-				  
-				  SeekBar sb = new SeekBar(MainActivity.ctx);
-				  sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				  
-					  int progressChanged = 0;
-				  
-				  public void onProgressChanged(SeekBar seekBar, int progress,
-				  boolean fromUser) { 
-					  progressChanged = progress; 
-					  consigna.setText(varnom +"  "+progress);
+				final TextView consigna = new TextView(MainActivity.ctx);
+				consigna.setText(Double.toString(variable.valor));
 
-					  }				  
-				  public void onStartTrackingTouch(SeekBar seekBar) {
-				  }
-				  
-				  public void onStopTrackingTouch(SeekBar seekBar) {
-				  seekBar.setSecondaryProgress(seekBar.getProgress());
-				  int pagina = MainActivity.mViewPager.getCurrentItem();
-				  servidor.plcs.get(pagina).ListaEscribir.add(new variableEscribir(varnom, seekBar.getProgress()));
-				  
-				  }
-				  });
-				  
-				  mil.setOrientation(LinearLayout.VERTICAL); 
-				  mil.addView(consigna);
-				  mil.addView(sb); 
-				  milayout.addView(mil); 
-				  variable.view = sb;
-				 
+				SeekBar sb = new SeekBar(MainActivity.ctx);
+				sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+					int progressChanged = 0;
+
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+						progressChanged = progress;
+						consigna.setText(varnom + "  " + progress);
+
+					}
+
+					public void onStartTrackingTouch(SeekBar seekBar) {
+					}
+
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						seekBar.setSecondaryProgress(seekBar.getProgress());
+						int pagina = MainActivity.mViewPager.getCurrentItem();
+						servidor.plcs.get(pagina).ListaEscribir
+								.add(new variableEscribir(varnom, seekBar
+										.getProgress()));
+
+					}
+				});
+
+				mil.setOrientation(LinearLayout.VERTICAL);
+				mil.addView(consigna);
+				mil.addView(sb);
+				variable.view = sb;
+
 				break;
-			case 5://plot
+			case 5:// plot
 
 				if (variable.historial.buffer.length > 0) {
 
@@ -223,8 +225,7 @@ public class dibuja extends View {
 							Color.LTGRAY, Color.rgb(0, 0, 0), null, plf);
 
 					miplot.addSeries(serie, formatter1);
-					milayout.addView(miplot);
-
+					mil.addView(miplot);
 					variable.view = miplot;
 				}
 				break;
@@ -233,34 +234,49 @@ public class dibuja extends View {
 				break;
 			}
 
+			if (!variable.panel.equals("")) {
+				int cont = 0;
+				while (!mp.paneles.get(cont).titulo.getText().toString()
+						.equals(variable.panel)) {
+					cont = cont + 1;
+				}
+				// panel mipanel=mp.paneles.get(cont);
+				mp.paneles.get(cont).meter(mil);
+				if (!mp.paneles.get(cont).colocado) {
+					mp.paneles.get(cont).colocado = true;
+					milayout.addView(mp.paneles.get(cont));
+				}
+				
+			} else
+				milayout.addView(mil);
 		}
+
 		milayout.requestFocus();
 		return milayout;
 	}
 
 	public static void actualiza(item variable) {
-		if (variable.valor != null) {
 
-			switch (variable.representacion) {
+		switch (variable.representacion) {
 
-			case 4:// es de escritura
-				break;
-			case 2:
-				TextView t = (TextView) (variable.view);
-				t.setText(variable.nombre + "   " + variable.valor.toString()+ " "+variable.dim);
-				variable.view.invalidate();
-				break;
+		case 4:// es de escritura
+			break;
+		case 2:
+			TextView t = (TextView) (variable.view);
+			t.setText(variable.nombre + "   " + Double.toString(variable.valor)
+					+ " " + variable.dim);
+			variable.view.invalidate();
+			break;
 
-			case 1:// es de escritura
-				break;
-			case 5:
-				XYPlot miplot = (XYPlot) variable.view;
-				miplot.redraw();
-				break;
+		case 1:// es de escritura
+			break;
+		case 5:
+			XYPlot miplot = (XYPlot) variable.view;
+			miplot.redraw();
+			break;
 
-			default:
-				break;
-			}
+		default:
+			break;
 		}
 
 	}

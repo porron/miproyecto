@@ -91,7 +91,7 @@ public class xml {
 
 	}
 
-	public static void leerXml(Context context) {
+	public static boolean leerXml(Context context) {
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -104,11 +104,15 @@ public class xml {
 			Log.e("leerxml", documentoXML.toString());
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
+			return false;
 		} catch (SAXException se) {
 			se.printStackTrace();
+			return false;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	public static Element generarPlc(plc miplc) {

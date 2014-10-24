@@ -55,34 +55,9 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 				.findViewById(R.id.eplcrefresco);
 		final EditText ip = (EditText) rootView.findViewById(R.id.eplcip);
 		
-		miplc=servidor.plcs.get(MainActivity.pagina);
-			
 		
-		ArrayList<String> items = new ArrayList<String>();
-		for (int i = 0; i < miplc.paneles.size(); i++) {
-			String s=(String) miplc.paneles.get(i).titulo.getText().toString();
-			items.add(s);
-		}
-		
-		
-//		final ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(
-//				MainActivity.ctx, android.R.layout.simple_list_item_1, items);
-		 ListView lpaneles = (ListView) rootView.findViewById(R.id.listView1);
-		
-		lpaneles.setAdapter(new ArrayAdapter<String>(MainActivity.ctx,
-				android.R.layout.simple_list_item_multiple_choice, items));
-			
-
-		lpaneles.setOnItemClickListener(new OnItemClickListener (){
-		     public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-		//         String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
-		    	 panel_seleccionado=myItemInt;
-		       }                 			
-		});
-		
-
-		
-		
+//		if (editando) miplc=servidor.plcs.get(MainActivity.pagina);
+							
 		ImageButton editar =(ImageButton)rootView.findViewById(R.id.edit_panel);
 		ImageButton crear =(ImageButton)rootView.findViewById(R.id.crear_panel);
 		ImageButton borrar =(ImageButton)rootView.findViewById(R.id.borrar_panel);
@@ -130,7 +105,7 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 		});
 			
 	 	
-
+/*
 		ToggleButton toggle = (ToggleButton) rootView
 				.findViewById(R.id.toggleButton1);
 		toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -157,25 +132,34 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 				}
 			}
 		});
-
+*/
 		if (editando) {
 			miplc = servidor.plcs.get(MainActivity.pagina);
 			nombre.setText(miplc.nombre);
 			refresco.setText(Integer.toString(miplc.refresco));
 			ip.setText(miplc.ip);
+			ArrayList<String> items = new ArrayList<String>();
+			for (int i = 0; i < miplc.paneles.size(); i++) {
+				String s=(String) miplc.paneles.get(i).titulo.getText().toString();
+				items.add(s);
+			}
+			ListView lpaneles = (ListView) rootView.findViewById(R.id.listView1);	
+			lpaneles.setAdapter(new ArrayAdapter<String>(MainActivity.ctx,
+					android.R.layout.simple_list_item_multiple_choice, items));
+				
+			lpaneles.setOnItemClickListener(new OnItemClickListener (){
+			     public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+			//         String selectedFromList =(String) (lv.getItemAtPosition(myItemInt));
+			    	 panel_seleccionado=myItemInt;
+			       }                 			
+			});
 
 		} else {
 
 			miplc = new plc();
-			miplc.id = "0";
-			miplc.nombre = "";
-			miplc.refresco = 1000;
-			miplc.ip = "0.0.0.0";
 			nombre.setText(miplc.nombre);
 			refresco.setText(Integer.toString(miplc.refresco));
 			ip.setText(miplc.ip);
-			// ArrayList<item> variables = new ArrayList<item>();
-			// miplc.variables = variables;
 
 		}
 		builder.setView(rootView);

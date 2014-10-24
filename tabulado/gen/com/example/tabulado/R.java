@@ -43,7 +43,7 @@ public final class R {
         public static final int bajar=0x7f0a0042;
         public static final int borrar_panel=0x7f0a0016;
         public static final int botonAlarmas=0x7f0a002f;
-        public static final int button1=0x7f0a0031;
+        public static final int botonVariables=0x7f0a0031;
         public static final int crear_panel=0x7f0a0014;
         public static final int edit_panel=0x7f0a0015;
         public static final int editmagnitud=0x7f0a0024;
@@ -115,11 +115,10 @@ public final class R {
         public static final int list_group=0x7f03000a;
         public static final int list_item=0x7f03000b;
         public static final int list_paneles=0x7f03000c;
-        public static final int panel_agrupacion=0x7f03000d;
-        public static final int panelalarmas=0x7f03000e;
-        public static final int tiposdato=0x7f03000f;
-        public static final int vacio=0x7f030010;
-        public static final int variables2=0x7f030011;
+        public static final int panelalarmas=0x7f03000d;
+        public static final int tiposdato=0x7f03000e;
+        public static final int vacio=0x7f03000f;
+        public static final int variables2=0x7f030010;
     }
     public static final class menu {
         public static final int activity_main=0x7f090000;

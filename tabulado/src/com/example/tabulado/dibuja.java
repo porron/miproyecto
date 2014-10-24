@@ -51,14 +51,18 @@ public class dibuja extends View {
 		LinearLayout milayout = new LinearLayout(MainActivity.ctx);
 		// final List <item> lasvariables = new ArrayList () ;
 		milayout.setOrientation(LinearLayout.VERTICAL);
+		LinearLayout.LayoutParams lp_wrap = new LinearLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		lp_wrap.gravity = Gravity.CENTER_VERTICAL;
+		LinearLayout.LayoutParams lp_fill = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
 		for (int i = 0; i < mp.variables.size(); i++) {
 
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 			item variable = (item) mp.variables.get(i);
 			LinearLayout mil = new LinearLayout(MainActivity.ctx);
+			mil.setPadding(4, 0, 0, 4);
 			TextView t = new TextView(MainActivity.ctx);
 			switch (variable.representacion) {
 
@@ -70,7 +74,7 @@ public class dibuja extends View {
 				ToggleButton b = new ToggleButton(MainActivity.ctx);
 				b.setId(i);
 				b.setText(variable.nombre);
-				b.setGravity(Gravity.RIGHT);
+				b.setGravity(Gravity.CENTER);
 				// b.setLayoutParams(LinearLayout.)
 				// Drawable myI = MainActivity.ctx.getResources().getDrawable(
 				// android.R.drawable.button_onoff_indicator_off);
@@ -94,7 +98,7 @@ public class dibuja extends View {
 					}
 				});
 				mil.addView(b);
-				mil.setLayoutParams(lp);
+				mil.setLayoutParams(lp_wrap);
 				variable.view = b;
 
 				break;
@@ -106,11 +110,13 @@ public class dibuja extends View {
 
 				// if (variable.valor != null)
 				valor1.setText(variable.nombre + "kkkk   " + variable.valor);
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(i, i);
+				
 				// mil.addView(t);
 				// mil.addView(valor1);
 				// milayout.addView(valor1);
 				mil.addView(valor1);
-				mil.setLayoutParams(lp);
+				mil.setLayoutParams(lp_wrap);
 				variable.view = valor1;
 
 				break;
@@ -123,7 +129,7 @@ public class dibuja extends View {
 
 				final EditText valorEdit = new EditText(MainActivity.ctx);
 				valorEdit.setLayoutParams(new LinearLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						120, LayoutParams.WRAP_CONTENT,
 						50f));
 
 				// valorEdit.setMinimumWidth(200);
@@ -131,11 +137,11 @@ public class dibuja extends View {
 				Button aceptar = new Button(MainActivity.ctx);
 				aceptar.setId(i);
 				Resources res = MainActivity.ctx.getResources();
-				Drawable myImage = res.getDrawable(android.R.drawable.btn_star);
+				Drawable myImage = res.getDrawable(android.R.drawable.btn_default_small);
 				aceptar.setBackground(myImage);
 				aceptar.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-						10f));
+						5f));
 
 				botones.put(aceptar.getId(), variable.nombre);
 				aceptar.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +167,8 @@ public class dibuja extends View {
 				mil.addView(t);
 				mil.addView(valorEdit);
 				mil.addView(aceptar);
-				mil.setLayoutParams(lp);
+				if (!variable.panel.equals("")) mil.setLayoutParams(lp_wrap);
+				else mil.setLayoutParams(lp_fill);
 				variable.view = valorEdit;
 
 				break;
@@ -196,6 +203,8 @@ public class dibuja extends View {
 					}
 				});
 
+				sb.setLayoutParams(new LinearLayout.LayoutParams(
+						200, LayoutParams.WRAP_CONTENT));
 				mil.setOrientation(LinearLayout.VERTICAL);
 				mil.addView(consigna);
 				mil.addView(sb);
@@ -209,6 +218,8 @@ public class dibuja extends View {
 					XYPlot miplot = new XYPlot(MainActivity.ctx,
 							variable.nombre);
 					plotserie serie = new plotserie(variable);
+					miplot.getLegendWidget().setVisible(false);
+					miplot.setGridPadding(0, 10, 10, 0);
 					// Plot.RenderMode.USE_BACKGROUND_THREAD
 					miplot.setDomainStepMode(XYStepMode.SUBDIVIDE);
 					miplot.setDomainStepValue(variable.plotlong);
@@ -226,6 +237,7 @@ public class dibuja extends View {
 
 					miplot.addSeries(serie, formatter1);
 					mil.addView(miplot);
+					mil.setPadding(0, 0, 0, 0);
 					variable.view = miplot;
 				}
 				break;

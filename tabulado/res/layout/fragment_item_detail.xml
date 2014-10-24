@@ -73,7 +73,7 @@
     </ListView>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/botonVariables"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="32dp"

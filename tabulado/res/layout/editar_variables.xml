@@ -173,8 +173,13 @@
             android:layout_gravity="fill_horizontal"
             android:layout_row="0"
             android:ems="10"
-            android:inputType="text" />
+            android:inputType="text" >
 
+            <requestFocus />
+            <requestFocus />
+
+        </EditText>
+        
         <EditText
             android:id="@+id/textoip"
             android:layout_width="85dp"
@@ -184,7 +189,6 @@
             android:ems="10"
             android:inputType="number" >
 
-            <requestFocus />
         </EditText>
 
         <Spinner

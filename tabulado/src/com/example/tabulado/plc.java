@@ -2,8 +2,6 @@ package com.example.tabulado;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Vector;
 
 import libreria.item;
@@ -11,32 +9,41 @@ import libreria.variableEscribir;
 
 
 public class plc {
-	// Variables
 	public String id;
 	public String nombre;
 	public String ip;
 	public int refresco;
-//	public Map <String,item> variables;
 	public java.util.ArrayList<item> variables;
 	public Vector<variableEscribir> ListaEscribir;
 	public java.util.ArrayList<alarma> ListaAlarmas;
 	public java.util.ArrayList<panel> paneles;
 	public comunicacion_asinc hilo_comunicacion;
-//	public  Map <String,Double> ListaEscribir ;
 
 	
+	public plc() {
+		int ind =servidor.plcs.size();
 
+		this.id = Integer.toString(ind);
+		this.nombre = "";
+		this.refresco = 1000;
+		this.ip = "0.0.0.0";
+		this.variables = new ArrayList<item>();
+		this.paneles = new ArrayList<panel>();
+		this.ListaEscribir =  new Vector<variableEscribir>();
+		this.ListaAlarmas= new ArrayList<alarma> ();
+	}
+	
+	
 	// Constructor de la clase
-	public void plc(String id, String nombre, String ip, int refresco,java.util.ArrayList<item> lista) {
+	public plc(String id, String nombre, String ip, int refresco,java.util.ArrayList<item> lista) {
 		this.id = id;
 		this.nombre = nombre;
 		this.ip = ip;
 		this.refresco = refresco;
-//		this.variables = new HashMap <String,item> ();
 		this.variables = new ArrayList<item>();
 		this.paneles = new ArrayList<panel>();
 		this.ListaEscribir =  new Vector<variableEscribir>();
-//		this.ListaEscribir = new HashMap <String,Double> ();
+		this.ListaAlarmas= new ArrayList<alarma> ();
 		variables = lista;
  
 	}
@@ -50,8 +57,8 @@ public class plc {
 		return this.id;
 	}
 
-	public void setnombre(String titulo) {
-		this.nombre = nombre;
+	public void setnombre(String enombre) {
+		this.nombre = enombre;
 	}
 
 	public String getnombre() {

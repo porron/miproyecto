@@ -2,6 +2,7 @@ package com.example.tabulado;
 import com.example.tabulado.R;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,7 +22,9 @@ public class panel extends LinearLayout {
 		this.addView(titulo);
 		this.addView(cinta);
 		cinta.setPadding(10, 0, 0, 0);
+		titulo.setPadding(4, 0, 0, 0);
 		titulo.setTextSize(12f);
+		titulo.setTextColor(Color.parseColor("#0099CC"));
 		this.setBackground(getResources().getDrawable(R.drawable.panel));
 		cinta.setOrientation(HORIZONTAL);
 		colocado=false;

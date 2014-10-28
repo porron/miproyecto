@@ -1,6 +1,7 @@
 package com.example.tabulado;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.NotificationCompat;
 //import android.support.v4.widget.SimpleCursorAdapter;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -176,6 +178,22 @@ public class EditarPlc extends DialogFragment implements OnItemSelectedListener 
 
 						if (!editando) {
 							servidor.plcs.add(miplc);
+						}
+						xml.generarServidor();
+						xml.escribirXml(MainActivity.ctx);
+						
+// reconectar los plcs pare ver cambios						
+						Iterator<plc> it = servidor.plcs.iterator();
+						while (it.hasNext()) {
+							plc p = (plc) it.next();
+							// p.hilo_comunicacion= new comunicacion_asinc().execute(p);
+							// p.hilo_comunicacion= new comunicacion_asinc(p);
+							// p.hilo_comunicacion.start();
+							if (p.hilo_comunicacion !=null) p.hilo_comunicacion.cancel(true);
+							p.hilo_comunicacion = new comunicacion_asinc(p);
+							p.hilo_comunicacion
+									.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
 						}
 						MainActivity.mViewPager.getAdapter()
 								.notifyDataSetChanged();

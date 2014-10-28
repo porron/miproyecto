@@ -107,31 +107,29 @@ public class editarVariables extends DialogFragment implements
 		spinnerPanel.setAdapter(adapter4);
 		// spinnerPanel.setOnItemSelectedListener(this);
 		// -----------------------------------------------------------------------------------------
-
-		if (editando) {
-//			 mivariable =
-//			 servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
-			nombre.setText(mivariable.nombre);
-			posicion.setText(Integer.toString(mivariable.offset));
-
-			if (mivariable.historial != null)
-				historico
-						.setText(Integer.toString(mivariable.historial.size()));
-			else
-				historico.setText("0");
-
-			plotlong.setText(Integer.toString(mivariable.plotlong));
-			max.setText(Double.toString(mivariable.max));
-			min.setText(Double.toString(mivariable.min));
-			magnitud.setText(mivariable.dim);
-
-			spinnerTipo.setSelection(mivariable.tipoDato);
-			spinnerRango.setSelection(mivariable.rango);
-			spinnerRepresentacion.setSelection(mivariable.representacion);
-			spinnerPanel.setSelection(items.indexOf(mivariable.panel));
-
-		} else
+		if (!editando) {
 			mivariable = new item();
+		}
+
+		// mivariable =
+		// servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
+		nombre.setText(mivariable.nombre);
+		posicion.setText(Integer.toString(mivariable.offset));
+
+		if (mivariable.historial != null)
+			historico.setText(Integer.toString(mivariable.historial.size()));
+		else
+			historico.setText("0");
+
+		plotlong.setText(Integer.toString(mivariable.plotlong));
+		max.setText(Double.toString(mivariable.max));
+		min.setText(Double.toString(mivariable.min));
+		magnitud.setText(mivariable.dim);
+
+		spinnerTipo.setSelection(mivariable.tipoDato);
+		spinnerRango.setSelection(mivariable.rango);
+		spinnerRepresentacion.setSelection(mivariable.representacion);
+		spinnerPanel.setSelection(items.indexOf(mivariable.panel));
 
 		builder.setView(rootView);
 		// Add action buttons
@@ -140,50 +138,68 @@ public class editarVariables extends DialogFragment implements
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
-						if (editando
-								|| validarNombre(nombre.getText().toString())) {
-
-							mivariable.nombre = nombre.getText().toString();
-							mivariable.offset = Integer.parseInt(posicion
-									.getText().toString());
-							mivariable.tipoDato = (int) spinnerTipo
-									.getSelectedItemId();
-							mivariable.rango = (int) spinnerRango
-									.getSelectedItemId();
-							mivariable.representacion = (int) spinnerRepresentacion
-									.getSelectedItemId();
-							mivariable.plotlong = Integer.parseInt(posicion
-									.getText().toString());
-							mivariable.granulado = Double.parseDouble(posicion
-									.getText().toString());
-							mivariable.max = Double.parseDouble(max.getText()
-									.toString());
-							mivariable.min = Double.parseDouble(min.getText()
-									.toString());
-							mivariable.dim = magnitud.getText().toString();
-							String panel = (String) spinnerPanel
-									.getSelectedItem();
-
-							// if (panel.equals("null")) mivariable.panel="";
-							// else mivariable.panel=panel;
-							mivariable.panel = panel;
-
-							if (Integer
-									.parseInt(historico.getText().toString()) > 0)
-								mivariable.historial = new libreria.historico(
-										Integer.parseInt(historico.getText()
-												.toString()));
-
-							editarVariables.this.getDialog().dismiss();
-							if (!editando) {
-								miPlc.variables.add(mivariable);
+						if (spinnerRango.getSelectedItemId() == 1
+								|| spinnerRango.getSelectedItemId() == 0) {
+							if (spinnerTipo.getSelectedItemId() != 0) {
+								spinnerTipo.setSelection(0);
+								Toast toast = Toast
+										.makeText(
+												MainActivity.ctx,
+												"Coil and Input ranges need Binary type",
+												Toast.LENGTH_SHORT);
 							}
-							xml.generarServidor();
-							xml.escribirXml(MainActivity.ctx);
 						} else {
-							Toast toast = Toast.makeText(MainActivity.ctx,
-									"El nombre de la variable ya existe",
-									Toast.LENGTH_SHORT);
+
+							if (validarNombre(nombre.getText().toString())
+									|| editando) {
+
+								mivariable.nombre = nombre.getText().toString();
+								mivariable.offset = Integer.parseInt(posicion
+										.getText().toString());
+								mivariable.tipoDato = (int) spinnerTipo
+										.getSelectedItemId();
+								mivariable.rango = (int) spinnerRango
+										.getSelectedItemId();
+								mivariable.representacion = (int) spinnerRepresentacion
+										.getSelectedItemId();
+								mivariable.plotlong = Integer.parseInt(posicion
+										.getText().toString());
+								mivariable.granulado = Double
+										.parseDouble(posicion.getText()
+												.toString());
+								mivariable.max = Double.parseDouble(max
+										.getText().toString());
+								mivariable.min = Double.parseDouble(min
+										.getText().toString());
+								mivariable.dim = magnitud.getText().toString();
+								String panel = (String) spinnerPanel
+										.getSelectedItem();
+
+								// if (panel.equals("null"))
+								// mivariable.panel="";
+								// else mivariable.panel=panel;
+								mivariable.panel = panel;
+
+								if (Integer.parseInt(historico.getText()
+										.toString()) > 0)
+									mivariable.historial = new libreria.historico(
+											Integer.parseInt(historico
+													.getText().toString()));
+
+								editarVariables.this.getDialog().dismiss();
+								if (!editando) {
+									miPlc.variables.add(mivariable);
+								}
+								miPlc.plc_modificado = true;
+								xml.generarServidor();
+								xml.escribirXml(MainActivity.ctx);
+								MainActivity.mViewPager.getAdapter()
+										.notifyDataSetChanged();
+							} else {
+								Toast toast = Toast.makeText(MainActivity.ctx,
+										"El nombre de la variable ya existe",
+										Toast.LENGTH_SHORT);
+							}
 						}
 
 					}
@@ -226,7 +242,7 @@ public class editarVariables extends DialogFragment implements
 			}
 		});
 
-		if (!editando){
+		if (!editando) {
 			nombre.addTextChangedListener(new TextWatcher() {
 				private void handleText() {
 					// Grab the button
@@ -289,16 +305,20 @@ public class editarVariables extends DialogFragment implements
 
 	boolean validarNombre(String minombre) {
 		boolean noencontrado = true;
+
 		Iterator<plc> it = servidor.plcs.iterator();
 		while (it.hasNext()) {
 			plc p = (plc) it.next();
-			int cont = 0;
-			while (noencontrado) {
-				if (p.variables.get(cont).nombre.equals(minombre))
-					noencontrado = false;
-				else
-					cont = cont + 1;
-			}
+			if (p.variables.size() > 0) {
+				int cont = 0;
+				while (noencontrado) {
+					if (p.variables.get(cont).nombre.equals(minombre))
+						noencontrado = false;
+					else
+						cont = cont + 1;
+				}
+			} else
+				noencontrado = true;
 		}
 		;
 		return noencontrado;

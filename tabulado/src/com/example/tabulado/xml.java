@@ -224,7 +224,7 @@ public class xml {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Element el = (Element) nl.item(i);
 			item variable = new item();
-			variable.plc = miplc.id;
+//			variable.plc = miplc.id;
 			variable.nombre = el.getAttribute("nombre");
 			variable.rango = Integer.parseInt(el.getAttribute("rango"));
 			variable.offset = Integer.parseInt(el.getAttribute("offset"));

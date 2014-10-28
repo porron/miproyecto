@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,6 +34,7 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
@@ -74,11 +77,18 @@ public class MainActivity extends FragmentActivity {
 	public static String pass_servidor = "";
 	public static String dir_espejo = "";
 	public static boolean comunicando = false;
+	public static int width;
+	public static int height;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		ctx = this;
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		width = size.x;
+		height = size.y;
 
 		Log.e("smain", "arranco");
 		// guardian miguardian = new guardian();
@@ -105,6 +115,16 @@ public class MainActivity extends FragmentActivity {
 			EditarPlc dialogo = new EditarPlc(false);
 	        dialogo.show(fragmentManager, "dialog");
 		}
+		else{
+			Iterator<plc> it = servidor.plcs.iterator();
+			while (it.hasNext()) {
+				plc p = (plc) it.next();
+				p.hilo_comunicacion = new comunicacion_asinc(p);
+				p.hilo_comunicacion
+						.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+		}
+			
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
@@ -141,18 +161,8 @@ public class MainActivity extends FragmentActivity {
 		mNotifyMgr.notify(mId, mBuilder.build());
 		// --------------------------------------------------------------------------------------------------------------------
 
-		Iterator<plc> it = servidor.plcs.iterator();
-		while (it.hasNext()) {
-			plc p = (plc) it.next();
-			// p.hilo_comunicacion= new comunicacion_asinc().execute(p);
-			// p.hilo_comunicacion= new comunicacion_asinc(p);
-			// p.hilo_comunicacion.start();
-			p.hilo_comunicacion = new comunicacion_asinc(p);
-			p.hilo_comunicacion
-					.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-		}
-		;
+		
 		pintor mipintor = (pintor) new pintor()
 				.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -305,7 +315,8 @@ public class MainActivity extends FragmentActivity {
 			textoip.setFocusable(false);
 			TextView textorefresco = (TextView) rootView
 					.findViewById(R.id.textorefresco);
-			Button botonAlarmas =(Button) rootView.findViewById(R.id.botonAlarmas);
+			Button botonAlarmas = (Button) rootView
+					.findViewById(R.id.botonAlarmas);
 			botonAlarmas.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					EditarAlarmas Crearalarma = new EditarAlarmas(null,
@@ -315,7 +326,8 @@ public class MainActivity extends FragmentActivity {
 				}
 			});
 
-			Button botonVariables =(Button) rootView.findViewById(R.id.botonVariables);
+			Button botonVariables = (Button) rootView
+					.findViewById(R.id.botonVariables);
 			botonVariables.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					editarVariables dialogo = new editarVariables(null,
@@ -330,6 +342,8 @@ public class MainActivity extends FragmentActivity {
 
 			ListView listaVariables = (ListView) rootView
 					.findViewById(R.id.listVariables);
+			listaVariables.setScrollbarFadingEnabled(false);
+			listaVariables.setScrollBarSize(10);
 			ListView listaAlarmas = (ListView) rootView
 					.findViewById(R.id.listAlarmas);
 
@@ -385,14 +399,14 @@ public class MainActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.comunicacion_item_detail,
 					container, false);
 
+			
+			ScrollView miscroll = (ScrollView) rootView.findViewById(R.id.miscroll);
+			miscroll.setScrollbarFadingEnabled(false);	
+			miscroll.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
 			LinearLayout milayout = dibuja.rellena(mp);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-			lp.setMargins(0, 0, 0, 0);
+			miscroll.addView(milayout);
 
-			milayout.setLayoutParams(lp);
-
-			((ViewGroup) rootView).addView(milayout);
+	//		((ViewGroup) rootView).addView(milayout);
 
 			return rootView;
 		}
@@ -401,109 +415,71 @@ public class MainActivity extends FragmentActivity {
 	// ------------------------------------------------------------------------------------------------------
 	// ------------------ MENU contextual
 	// ----------------------------------------------------------------
-/*
-	public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
-		// Called when the action mode is created; startActionMode() was called
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Inflate a menu resource providing context menu items
-			MenuInflater inflater = mode.getMenuInflater();
-			inflater.inflate(R.menu.menu_variables, menu);
-			return true;
-		}
-
-		// Called each time the action mode is shown. Always called after
-		// onCreateActionMode, but
-		// may be called multiple times if the mode is invalidated.
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return false; // Return false if nothing is done
-		}
-
-		// Called when the user selects a contextual menu item
-		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-			switch (item.getItemId()) {
-
-			case R.id.item3:
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						ctx);
-				alertDialogBuilder.setTitle("Atencion");
-				alertDialogBuilder
-						.setMessage("Va a eliminar una variable!")
-						.setCancelable(false)
-						.setPositiveButton("Aceptar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										servidor.plcs.get(MainActivity.pagina).variables
-												.remove(MainActivity.indvariable);
-										xml.generarServidor();
-										dialog.cancel();
-									};
-								})
-						.setNegativeButton("Cancelar",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dialog.cancel();
-									}
-								});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
-				mode.finish(); // Action picked, so close the CAB
-				return true;
-			case R.id.item2:
-				// shareCurrentItem();
-				pagina = mViewPager.getCurrentItem();
-				if (clickvariable) {
-					item variable = servidor.plcs.get(MainActivity.pagina).variables
-							.get(MainActivity.indvariable);
-					editarVariables dialogo = new editarVariables(variable,
-							servidor.plcs.get(MainActivity.pagina));
-					dialogo.show(getSupportFragmentManager(), "editar");
-				} else {
-					alarma mialarma = servidor.plcs.get(MainActivity.pagina).ListaAlarmas
-							.get(MainActivity.indalarma);
-					EditarAlarmas dialogo = new EditarAlarmas(mialarma,
-							servidor.plcs.get(MainActivity.pagina));
-					dialogo.show(getSupportFragmentManager(), "editar");
-				}
-				mode.finish(); // Action picked, so close the CAB
-				return true;
-
-			case R.id.subir:
-				java.util.Collections.swap(
-						servidor.plcs.get(MainActivity.pagina).variables,
-						MainActivity.indvariable, MainActivity.indvariable - 1);
-				xml.generarServidor();
-				xml.escribirXml(MainActivity.ctx);
-				return true;
-			case R.id.bajar:
-				java.util.Collections.swap(
-						servidor.plcs.get(MainActivity.pagina).variables,
-						MainActivity.indvariable, MainActivity.indvariable + 1);
-				xml.generarServidor();
-				xml.escribirXml(MainActivity.ctx);
-				return true;
-
-			default:
-				return false;
-			}
-		}
-
-		// Called when the user exits the action mode
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-			mActionMode = null;
-		}
-	};
-
-	
-	
-	*/
+	/*
+	 * public ActionMode.Callback mActionModeCallback = new
+	 * ActionMode.Callback() {
+	 * 
+	 * // Called when the action mode is created; startActionMode() was called
+	 * 
+	 * @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	 * // Inflate a menu resource providing context menu items MenuInflater
+	 * inflater = mode.getMenuInflater();
+	 * inflater.inflate(R.menu.menu_variables, menu); return true; }
+	 * 
+	 * // Called each time the action mode is shown. Always called after //
+	 * onCreateActionMode, but // may be called multiple times if the mode is
+	 * invalidated.
+	 * 
+	 * @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu)
+	 * { return false; // Return false if nothing is done }
+	 * 
+	 * // Called when the user selects a contextual menu item
+	 * 
+	 * @Override public boolean onActionItemClicked(ActionMode mode, MenuItem
+	 * item) {
+	 * 
+	 * switch (item.getItemId()) {
+	 * 
+	 * case R.id.item3: AlertDialog.Builder alertDialogBuilder = new
+	 * AlertDialog.Builder( ctx); alertDialogBuilder.setTitle("Atencion");
+	 * alertDialogBuilder .setMessage("Va a eliminar una variable!")
+	 * .setCancelable(false) .setPositiveButton("Aceptar", new
+	 * DialogInterface.OnClickListener() { public void onClick(DialogInterface
+	 * dialog, int id) { servidor.plcs.get(MainActivity.pagina).variables
+	 * .remove(MainActivity.indvariable); xml.generarServidor();
+	 * dialog.cancel(); }; }) .setNegativeButton("Cancelar", new
+	 * DialogInterface.OnClickListener() { public void onClick(DialogInterface
+	 * dialog, int id) { dialog.cancel(); } }); AlertDialog alertDialog =
+	 * alertDialogBuilder.create(); alertDialog.show(); mode.finish(); // Action
+	 * picked, so close the CAB return true; case R.id.item2: //
+	 * shareCurrentItem(); pagina = mViewPager.getCurrentItem(); if
+	 * (clickvariable) { item variable =
+	 * servidor.plcs.get(MainActivity.pagina).variables
+	 * .get(MainActivity.indvariable); editarVariables dialogo = new
+	 * editarVariables(variable, servidor.plcs.get(MainActivity.pagina));
+	 * dialogo.show(getSupportFragmentManager(), "editar"); } else { alarma
+	 * mialarma = servidor.plcs.get(MainActivity.pagina).ListaAlarmas
+	 * .get(MainActivity.indalarma); EditarAlarmas dialogo = new
+	 * EditarAlarmas(mialarma, servidor.plcs.get(MainActivity.pagina));
+	 * dialogo.show(getSupportFragmentManager(), "editar"); } mode.finish(); //
+	 * Action picked, so close the CAB return true;
+	 * 
+	 * case R.id.subir: java.util.Collections.swap(
+	 * servidor.plcs.get(MainActivity.pagina).variables,
+	 * MainActivity.indvariable, MainActivity.indvariable - 1);
+	 * xml.generarServidor(); xml.escribirXml(MainActivity.ctx); return true;
+	 * case R.id.bajar: java.util.Collections.swap(
+	 * servidor.plcs.get(MainActivity.pagina).variables,
+	 * MainActivity.indvariable, MainActivity.indvariable + 1);
+	 * xml.generarServidor(); xml.escribirXml(MainActivity.ctx); return true;
+	 * 
+	 * default: return false; } }
+	 * 
+	 * // Called when the user exits the action mode
+	 * 
+	 * @Override public void onDestroyActionMode(ActionMode mode) { mActionMode
+	 * = null; } };
+	 */
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);

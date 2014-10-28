@@ -56,13 +56,17 @@ public class dibuja extends View {
 		lp_wrap.gravity = Gravity.CENTER_VERTICAL;
 		LinearLayout.LayoutParams lp_fill = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams layaout_milayout = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		milayout.setLayoutParams(layaout_milayout);
+//		milayout.setBackgroundColor(Color.BLUE);
 
 		for (int i = 0; i < mp.variables.size(); i++) {
 
 
 			item variable = (item) mp.variables.get(i);
 			LinearLayout mil = new LinearLayout(MainActivity.ctx);
-			mil.setPadding(4, 0, 0, 4);
+			mil.setPadding(8, 0, 0, 8);
 			TextView t = new TextView(MainActivity.ctx);
 			switch (variable.representacion) {
 
@@ -106,15 +110,16 @@ public class dibuja extends View {
 
 				// mil.setOrientation(LinearLayout.HORIZONTAL);
 				// t.setText(variable.nombre);
+				TextView titulo = new TextView(MainActivity.ctx);
 				TextView valor1 = new TextView(MainActivity.ctx);
 
-				// if (variable.valor != null)
-				valor1.setText(variable.nombre + "kkkk   " + variable.valor);
+				titulo.setText(variable.nombre+" :");
+				titulo.setLines(1);
+				titulo.setTextColor(Color.LTGRAY);
+				valor1.setText(variable.valor+" "+variable.dim);
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(i, i);
 				
-				// mil.addView(t);
-				// mil.addView(valor1);
-				// milayout.addView(valor1);
+				mil.addView(titulo);
 				mil.addView(valor1);
 				mil.setLayoutParams(lp_wrap);
 				variable.view = valor1;
@@ -123,14 +128,15 @@ public class dibuja extends View {
 			case 3:// editable
 				mil.setOrientation(LinearLayout.HORIZONTAL);
 				t.setText(variable.nombre);
+				t.setTextColor(Color.DKGRAY);
 				t.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-						40f));
+						0.4f));
 
 				final EditText valorEdit = new EditText(MainActivity.ctx);
 				valorEdit.setLayoutParams(new LinearLayout.LayoutParams(
 						120, LayoutParams.WRAP_CONTENT,
-						50f));
+						0.4f));
 
 				// valorEdit.setMinimumWidth(200);
 
@@ -141,7 +147,7 @@ public class dibuja extends View {
 				aceptar.setBackground(myImage);
 				aceptar.setLayoutParams(new LinearLayout.LayoutParams(
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-						5f));
+						0.2f));
 
 				botones.put(aceptar.getId(), variable.nombre);
 				aceptar.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +182,7 @@ public class dibuja extends View {
 				final String varnom = variable.nombre;
 
 				final TextView consigna = new TextView(MainActivity.ctx);
-				consigna.setText(Double.toString(variable.valor));
+				consigna.setText(varnom + "  " );
 
 				SeekBar sb = new SeekBar(MainActivity.ctx);
 				sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -204,7 +210,7 @@ public class dibuja extends View {
 				});
 
 				sb.setLayoutParams(new LinearLayout.LayoutParams(
-						200, LayoutParams.WRAP_CONTENT));
+						MainActivity.width, LayoutParams.WRAP_CONTENT));
 				mil.setOrientation(LinearLayout.VERTICAL);
 				mil.addView(consigna);
 				mil.addView(sb);
@@ -236,6 +242,11 @@ public class dibuja extends View {
 							Color.LTGRAY, Color.rgb(0, 0, 0), null, plf);
 
 					miplot.addSeries(serie, formatter1);
+					// ponemos el tamaño del plot a la anchura de la pantalla
+					miplot.setLayoutParams(new LinearLayout.LayoutParams(
+							MainActivity.width,MainActivity.width,
+							0.5f));
+					mil.setLayoutParams(lp_wrap);
 					mil.addView(miplot);
 					mil.setPadding(0, 0, 0, 0);
 					variable.view = miplot;
@@ -275,8 +286,7 @@ public class dibuja extends View {
 			break;
 		case 2:
 			TextView t = (TextView) (variable.view);
-			t.setText(variable.nombre + "   " + Double.toString(variable.valor)
-					+ " " + variable.dim);
+			t.setText(Double.toString(variable.valor)+ " " + variable.dim);
 			variable.view.invalidate();
 			break;
 

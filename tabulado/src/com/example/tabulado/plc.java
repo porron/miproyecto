@@ -18,6 +18,7 @@ public class plc {
 	public java.util.ArrayList<alarma> ListaAlarmas;
 	public java.util.ArrayList<panel> paneles;
 	public comunicacion_asinc hilo_comunicacion;
+	public boolean plc_modificado ;
 
 	
 	public plc() {
@@ -31,6 +32,7 @@ public class plc {
 		this.paneles = new ArrayList<panel>();
 		this.ListaEscribir =  new Vector<variableEscribir>();
 		this.ListaAlarmas= new ArrayList<alarma> ();
+		this.plc_modificado=true;
 	}
 	
 	
@@ -45,6 +47,8 @@ public class plc {
 		this.ListaEscribir =  new Vector<variableEscribir>();
 		this.ListaAlarmas= new ArrayList<alarma> ();
 		variables = lista;
+		this.plc_modificado=true;
+
  
 	}
 

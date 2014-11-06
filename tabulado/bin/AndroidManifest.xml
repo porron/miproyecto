@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tabulado"
+    package="com.mipaquete"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" >
         <activity
-            android:name="com.example.tabulado.MainActivity"
+            android:name="com.mipaquete.MainActivity"
             android:label="@string/app_name" 
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name="panelAlarmas"></activity>
-        <activity android:name="com.example.tabulado.preferencias"></activity>
+        <activity android:name="com.mipaquete.preferencias"></activity>
     </application>
 
 </manifest>

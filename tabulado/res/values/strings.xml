@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Cerbero</string>
+    <string name="app_name">Kerbero</string>
     <string name="title_section3">Section 3</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section1">Section 1</string>
@@ -64,5 +64,7 @@
     <string name="Alarmas">botonAlarmas</string>
     <string name="botonVariables">Variables</string>
     <string name="botonAlarmas">Alarmas</string>
+    <string name="t_ip">IP</string>
+    <string name="t_refresco">Refresh rate</string>
 
 </resources>

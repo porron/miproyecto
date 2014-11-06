@@ -147,7 +147,7 @@
         android:inputType="numberDecimal" />
 
         <EditText
-            android:id="@+id/trefresco"
+            android:id="@+id/toffset"
             android:layout_width="212dp"
             android:layout_column="1"
             android:layout_columnSpan="3"
@@ -181,7 +181,7 @@
         </EditText>
         
         <EditText
-            android:id="@+id/textoip"
+            android:id="@+id/thistorial"
             android:layout_width="85dp"
             android:layout_column="1"
             android:layout_gravity="fill_horizontal"

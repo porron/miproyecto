@@ -7,4 +7,6 @@
     <item android:id="@+id/item3" android:title="@string/borrarvariable" android:icon="@android:drawable/ic_delete"></item>
     <item android:id="@+id/subir" android:title="@string/subir"  ></item>
     <item android:id="@+id/bajar" android:title="@string/bajar"  ></item>
+    <item android:id="@+id/enviarMail" android:title="@string/enviarMail"  ></item>
+    
 </menu>

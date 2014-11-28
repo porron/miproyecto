@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -60,6 +61,13 @@ public class dibuja extends View {
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		milayout.setLayoutParams(layaout_milayout);
 //		milayout.setBackgroundColor(Color.BLUE);
+		for (int i = 0; i < mp.paneles.size(); i++)
+		{
+			mp.paneles.get(i).colocado=false;
+			mp.paneles.get(i).cinta.removeAllViews();
+			if (mp.paneles.get(i).getParent() != null)
+			((ViewGroup)mp.paneles.get(i).getParent()).removeView(mp.paneles.get(i));
+		}
 
 		for (int i = 0; i < mp.variables.size(); i++) {
 
@@ -219,6 +227,7 @@ public class dibuja extends View {
 				mil.setOrientation(LinearLayout.VERTICAL);
 				mil.addView(consigna);
 				mil.addView(sb);
+				mil.setLayoutParams(lp_wrap);
 				variable.view = sb;
 
 				break;

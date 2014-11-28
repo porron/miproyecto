@@ -5,15 +5,20 @@ import com.mipaquete.R;
 public class liataEntrada {
 	private alarma.estados estado;
 	private String texto; 
+	private String fecha;
 
-	public liataEntrada (alarma.estados estado, String texto) { 
+	public liataEntrada (alarma.estados estado, String texto,String fecha) { 
 	    this.estado = estado; 
-	    this.texto = texto; 
+	    this.texto = texto;
+	    this.fecha=fecha;
 
 	}
 
 	public String get_texto() { 
 	    return texto; 
+	}
+	public String get_fecha(){
+		return fecha;
 	}
 
 	public int get_idImagen() {

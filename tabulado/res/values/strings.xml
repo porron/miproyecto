@@ -57,8 +57,9 @@
     <string name="nuevo_plc">Nuevo</string>
     <string name="Plc_nuevo">Crear Plc nuevo</string>
     <string name="editar_plc">Editar Plc</string>
-    <string name="subir">subir variable</string>
-    <string name="bajar">bajar variable</string>
+    <string name="subir">subir</string>
+    <string name="bajar">bajar</string>
+    <string name="enviarMail">Enviar historico</string>
     <string name="editpanel">editar panel</string>
     <string name="menupanel">Paneles</string>
     <string name="Alarmas">botonAlarmas</string>

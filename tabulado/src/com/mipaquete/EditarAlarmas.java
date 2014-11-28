@@ -2,9 +2,7 @@ package com.mipaquete;
 
 import java.util.ArrayList;
 
-
 import libreria.item;
-
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-
 public class EditarAlarmas extends DialogFragment implements
 		OnItemSelectedListener {
 
@@ -41,9 +38,11 @@ public class EditarAlarmas extends DialogFragment implements
 		super();
 		mialarma = alar;
 		miplc = Plc;
-		
+
 		if (alar == null)
 			editando = false;
+		else
+			editando = true;
 
 	}
 
@@ -87,22 +86,23 @@ public class EditarAlarmas extends DialogFragment implements
 		spinnerOperador = (Spinner) rootView.findViewById(R.id.spinnerOperador);
 		spinnerOperador.setAdapter(adapterOperadores);
 
-		
-		final EditText nombre = (EditText) rootView.findViewById(R.id.thistorial);
+		final EditText nombre = (EditText) rootView
+				.findViewById(R.id.thistorial);
 		if (editando) {
 			// mivariable =
 			// servidor.plcs.get(MainActivity.pagina).variables.get(MainActivity.indvariable);
 			nombre.setText(mialarma.nombre);
-			int spinnerPosition = adaptervariables1.getPosition(mialarma.fuenteDato1);
+			int spinnerPosition = adaptervariables1
+					.getPosition(mialarma.fuenteDato1);
 			spinnerDato1.setSelection(spinnerPosition);
-			spinnerPosition = adaptervariables2.getPosition(mialarma.fuenteDato2);
+			spinnerPosition = adaptervariables2
+					.getPosition(mialarma.fuenteDato2);
 			spinnerDato2.setSelection(spinnerPosition);
-			spinnerOperador.setSelection(mialarma.operador);
+			spinnerOperador.setSelection(mialarma.operador - 1);
 
 		} else
 			mialarma = new alarma();
 		// ---------------------------------------------------------------------------------------------------------------------------------------------
-
 
 		builder.setView(rootView);
 		// Add action buttons
@@ -117,12 +117,18 @@ public class EditarAlarmas extends DialogFragment implements
 						String fuenteDato2 = (String) spinnerDato2
 								.getSelectedItem();
 						int operador = (int) spinnerOperador
-								.getSelectedItemId();
+								.getSelectedItemId() + 1;
 						if (!editando) {
 							mialarma = new alarma(nom, fuenteDato1,
 									fuenteDato2, operador);
 							miplc.ListaAlarmas.add(mialarma);
+						} else {
+							mialarma.nombre = nom;
+							mialarma.fuenteDato1 = fuenteDato1;
+							mialarma.fuenteDato2 = fuenteDato2;
+							mialarma.operador = operador;
 						}
+						alarma.apuntarAlarmas();
 						xml.generarServidor();
 						xml.escribirXml(MainActivity.ctx);
 					}
@@ -192,8 +198,8 @@ public class EditarAlarmas extends DialogFragment implements
 
 	public void onDismiss(DialogInterface dialog) {
 		if (miplc.variables.size() == 0) {
-//			editarVariables dialogo2 = new editarVariables(null, miplc);
-//			dialogo2.show(getFragmentManager(), "Variables");
+			// editarVariables dialogo2 = new editarVariables(null, miplc);
+			// dialogo2.show(getFragmentManager(), "Variables");
 		} else {
 			// miplc.hilo_comunicacion.cancel(true);
 			// miplc.hilo_comunicacion = new comunicacion_asinc(miplc);

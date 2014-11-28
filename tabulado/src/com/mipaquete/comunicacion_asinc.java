@@ -12,8 +12,12 @@ import libreria.item;
 import libreria.paquete;
 import libreria.variableEscribir;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 //import android.app.DialogFragment;
 import android.content.Context;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -66,7 +70,6 @@ public class comunicacion_asinc extends AsyncTask<Void, String, Void> {
 
 		IpParameters param = new IpParameters();
 		param.setHost(miPlc.ip);
-//		param.setHost("192.168.1.131");
 		param.setPort(502);
 		param.setEncapsulated(false);
 		ModbusMaster master = factory.createTcpMaster(param, true);
@@ -75,6 +78,7 @@ public class comunicacion_asinc extends AsyncTask<Void, String, Void> {
 		
 
 		try {
+						
 			master.init();
 			Log.e("conexion", "inicio el master ");
 
@@ -138,7 +142,12 @@ public class comunicacion_asinc extends AsyncTask<Void, String, Void> {
 					}
 					for (int i = 0; i < miPlc.ListaAlarmas.size(); i++) {
 						alarma mialarma = miPlc.ListaAlarmas.get(i);
+						alarma.estados estadoanterior = mialarma.estado; 
 						mialarma.procesar();
+						if (estadoanterior!= alarma.estados.disparada && mialarma.estado== alarma.estados.disparada){
+							mialarma.hora=new Date();
+							publishProgress("alarma"+mialarma.nombre);
+						}
 					}
 
 					// ------------------------------------------------------------
@@ -187,9 +196,20 @@ public class comunicacion_asinc extends AsyncTask<Void, String, Void> {
 
 	protected void onProgressUpdate(String... progress) {
 
+		if (progress[0].substring(0, 6).equals("alarma")){
+			int mId = 1;
+			NotificationManager mNotifyMgr = (NotificationManager) MainActivity.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+			MainActivity.mBuilder.setContentTitle("Kerbero alarma");
+			MainActivity.mBuilder.setContentText(progress[0].substring(6));
+			mNotifyMgr.notify(1, MainActivity.mBuilder.build());
+		}
+		else {
 		alerta_conexion_plc newFragment = new alerta_conexion_plc(miPlc.nombre
 				+ "\nError  : " + progress[0]);
 		newFragment.show(MainActivity.fragmentManager, "missiles");
+		}
+
+
 
 	}
 }

@@ -1,6 +1,7 @@
 package com.mipaquete;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -12,31 +13,33 @@ import android.widget.ListView;
 import android.widget.ToggleButton;
 
 public class alarma {
-	public boolean disparada;
+	// public boolean disparada;
 	public String nombre;
 	public boolean activa;
-	String fuenteDato1;
-	String fuenteDato2;
+	public String fuenteDato1;
+	public String fuenteDato2;
+	public Date hora;
 	item dato1;
 	item dato2;
 	int operador;
 
-	enum estados {
+	public enum estados {
 		disparada, revisada, cargada
 	};
 
-	estados estado;
+	public estados estado;
 
-	public alarma( ) {
+	public alarma() {
 
 		// TODO Auto-generated constructor stub
 	}
-	
-	public alarma(String nombre, String fdato1, String fdato2, int ope ) {
-		this.nombre =nombre ;
-		this.fuenteDato1=fdato1;
-		this.fuenteDato2=fdato2;
-		this.operador=ope;
+
+	public alarma(String nombre, String fdato1, String fdato2, int ope) {
+		this.nombre = nombre;
+		this.fuenteDato1 = fdato1;
+		this.fuenteDato2 = fdato2;
+		this.operador = ope;
+		estado = estados.cargada;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -49,7 +52,7 @@ public class alarma {
 				valor = dato1.valor > dato2.valor;
 				break;
 			case 2:
-				valor = dato1.valor>= dato2.valor;
+				valor = dato1.valor >= dato2.valor;
 				break;
 			case 3:
 				valor = dato1.valor < dato2.valor;
@@ -63,9 +66,13 @@ public class alarma {
 			default:
 				break;
 			}
-			disparada = valor;
-			if (valor)
+			// disparada = valor;
+			alarma.estados estadoanterior = estado;
+
+			if (estado == estados.cargada && valor) {
 				estado = estados.disparada;
+				hora = new Date();
+			}
 			if (estado == estados.revisada && !valor)
 				estado = estados.cargada;
 		}
@@ -106,38 +113,39 @@ public class alarma {
 			}
 
 		}
-	
+
 	}
-static public  String [] rellenar_lista (plc mp){
-	String[] lista = new String[ mp.ListaAlarmas.size()];
-	for (int i = 0; i < mp.ListaAlarmas.size(); i++) {
-		String texto;
-		texto=(String) (mp.ListaAlarmas.get(i).nombre + "    ");
-		texto=(String) (texto+mp.ListaAlarmas.get(i).fuenteDato1+" ");
-		String op="" ;
-		switch (mp.ListaAlarmas.get(i).operador) {
-		case 1:
-			op = (String) ">"; 
-			break;
-		case 2:
-			op = (String) ">="; 
-			break;
-		case 3:
-			op = (String) "<"; 
-			break;
-		case 4:
-			op = (String) "<="; 
-			break;
-		case 5:
-			op = (String) "="; 
-			break;
-		default:
-			break;
+
+	static public String[] rellenar_lista(plc mp) {
+		String[] lista = new String[mp.ListaAlarmas.size()];
+		for (int i = 0; i < mp.ListaAlarmas.size(); i++) {
+			String texto;
+			texto = (String) (mp.ListaAlarmas.get(i).nombre + "    ");
+			texto = (String) (texto + mp.ListaAlarmas.get(i).fuenteDato1 + " ");
+			String op = "";
+			switch (mp.ListaAlarmas.get(i).operador) {
+			case 1:
+				op = (String) ">";
+				break;
+			case 2:
+				op = (String) ">=";
+				break;
+			case 3:
+				op = (String) "<";
+				break;
+			case 4:
+				op = (String) "<=";
+				break;
+			case 5:
+				op = (String) "=";
+				break;
+			default:
+				break;
+			}
+			texto = (String) (texto + " " + op + " " + mp.ListaAlarmas.get(i).fuenteDato2);
+			lista[i] = texto;
 		}
-		texto=(String) (texto+" "+op+" "+mp.ListaAlarmas.get(i).fuenteDato2);
-		lista[i]=texto;
+		return lista;
 	}
-	return lista;
-}
 
 }

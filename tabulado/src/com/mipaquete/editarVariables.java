@@ -197,6 +197,7 @@ public class editarVariables extends DialogFragment implements
 								miPlc.plc_modificado = true;
 								xml.generarServidor();
 								xml.escribirXml(MainActivity.ctx);
+								MainActivity.scrolls.set(MainActivity.pagina,dibuja.rellena(miPlc)) ;
 								MainActivity.mViewPager.getAdapter()
 										.notifyDataSetChanged();
 							} else {
@@ -315,7 +316,7 @@ public class editarVariables extends DialogFragment implements
 			plc p = (plc) it.next();
 			if (p.variables.size() > 0) {
 				int cont = 0;
-				while (noencontrado) {
+				while (noencontrado&& cont<p.variables.size()) {
 					if (p.variables.get(cont).nombre.equals(minombre))
 						noencontrado = false;
 					else

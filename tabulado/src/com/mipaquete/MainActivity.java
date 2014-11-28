@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.mipaquete.R;
-
-
 import libreria.item;
 
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -44,6 +44,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
@@ -64,10 +65,10 @@ public class MainActivity extends FragmentActivity {
 	public static plc miPlc;
 	public static Context ctx;
 	public static int indvariable;
-	public static int indalarma;
+	// public static int indalarma;
 	public static int pagina;
 	public static ListView listaVariables;
-	public static TextView texto;
+	// public static TextView texto;
 	public static boolean modoComunicacion;
 	public static Socket misocket;
 	public static ObjectOutputStream out;
@@ -82,9 +83,31 @@ public class MainActivity extends FragmentActivity {
 	public static boolean comunicando = false;
 	public static int width;
 	public static int height;
+	static boolean aplicacionInicializada = false;
+	public static NotificationCompat.Builder mBuilder;
+	public static ArrayList<LinearLayout> scrolls = new ArrayList<LinearLayout>();
+
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		aplicacionInicializada = true;
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		aplicacionInicializada = true;
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		aplicacionInicializada = true;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
 
 		ctx = this;
 		Display display = getWindowManager().getDefaultDisplay();
@@ -92,13 +115,14 @@ public class MainActivity extends FragmentActivity {
 		display.getSize(size);
 		width = size.x;
 		height = size.y;
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		Log.e("smain", "arranco");
-
-		xml.crearDocumento();
-		if (xml.leerXml(ctx)) {
-			xml.parsearDocumento();
-			alarma.apuntarAlarmas();
+		if (!aplicacionInicializada) {
+			xml.crearDocumento();
+			if (xml.leerXml(ctx)) {
+				xml.parsearDocumento();
+				alarma.apuntarAlarmas();
+			}
 		}
 
 		SharedPreferences sharedPref = PreferenceManager
@@ -106,42 +130,50 @@ public class MainActivity extends FragmentActivity {
 		nombre_servidor = sharedPref.getString("NOMBRE_SERVIDOR", "");
 		pass_servidor = sharedPref.getString("PASS_SERVIDOR", "");
 		dir_espejo = sharedPref.getString("DIR_ESPEJO", "");
-
-// por si no hay nada en preferencias....
-		if (nombre_servidor.equals("")) nombre_servidor ="miservidor";
-		if (pass_servidor.equals("")) pass_servidor ="abcd";
-		if (dir_espejo.equals("")) dir_espejo ="82.223.78.55";
-				
+		// por si no hay nada en preferencias....
+		if (nombre_servidor.equals(""))
+			nombre_servidor = "miservidor";
+		if (pass_servidor.equals(""))
+			pass_servidor = "abcd";
+		if (dir_espejo.equals(""))
+			dir_espejo = "82.223.78.55";
 
 		fragmentManager = getSupportFragmentManager();
-		
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		int c = servidor.plcs.size();
-		if (c == 0) {
-			EditarPlc dialogo = new EditarPlc(false);
-	        dialogo.show(fragmentManager, "dialog");
-		}
-		else{
-			Iterator<plc> it = servidor.plcs.iterator();
-			while (it.hasNext()) {
-				plc p = (plc) it.next();
-				p.hilo_comunicacion = new comunicacion_asinc(p);
-				p.hilo_comunicacion
-						.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-		}
-			
-
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.getCurrentItem();
 
-//		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.activity_main);
+		scrolls.clear();
+		Iterator<plc> it = servidor.plcs.iterator();
+		while (it.hasNext()) {
+			plc p = (plc) it.next();
+			scrolls.add(dibuja.rellena(p));
+		}
+
+		if (!aplicacionInicializada) {
+			int c = servidor.plcs.size();
+			if (c == 0) {
+				EditarPlc dialogo = new EditarPlc(false);
+				dialogo.show(fragmentManager, "dialog");
+			} else {
+				it = servidor.plcs.iterator();
+				while (it.hasNext()) {
+					plc p = (plc) it.next();
+					p.hilo_comunicacion = new comunicacion_asinc(p);
+					p.hilo_comunicacion
+							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+			}
+		}
+
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.getCurrentItem();
 
 		// FragmentActivity android.support.v4.app.Fragment main_activity=
 		// getActivity() ;
@@ -151,30 +183,40 @@ public class MainActivity extends FragmentActivity {
 		// alarmas--------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
 
-//		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-//				this).setSmallIcon(R.drawable.ic_launcher)
-//				.setContentTitle("My notification")
-//				.setContentText("Hello World!");
-//		Intent resultIntent = new Intent(this, panelAlarmas.class);
-//		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-//		// Adds the back stack for the Intent (but not the Intent itself)
-//		stackBuilder.addParentStack(panelAlarmas.class);
-//		// Adds the Intent that starts the Activity to the top of the stack
-//		stackBuilder.addNextIntent(resultIntent);
-//		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-//				PendingIntent.FLAG_UPDATE_CURRENT);
-//		mBuilder.setContentIntent(resultPendingIntent);
-//		int mId = 1;
-//		NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		mNotifyMgr.notify(mId, mBuilder.build());
+		Intent resultIntent = new Intent(this, panelAlarmas.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack
+		stackBuilder.addParentStack(panelAlarmas.class);
+		// Adds the Intent to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		// Gets a PendingIntent containing the entire back stack
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+				
+		mBuilder = new NotificationCompat.Builder(this)
+        .setSmallIcon(R.drawable.icono)
+        .setContentTitle(getString(R.string.app_name))
+        .setDefaults(Notification.DEFAULT_SOUND);
+//        .setAutoCancel(true);
+		mBuilder.setContentIntent(resultPendingIntent);
+		
+
+		// NotificationManager mNotificationManager =
+		// (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mNotificationManager.notify(1, mBuilder.build());
+
+		// int mId = 1;
+		// NotificationManager mNotifyMgr = (NotificationManager)
+		// getSystemService(Context.NOTIFICATION_SERVICE);
+		// mNotifyMgr.notify(mId, mBuilder.build());
 		// --------------------------------------------------------------------------------------------------------------------
 
+		if (!aplicacionInicializada) {
+			pintor mipintor = (pintor) new pintor()
+					.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
 
-		
-		pintor mipintor = (pintor) new pintor()
-				.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-		Log.e("jjjjj", "acabo el main");
 		// guardian miguardian = new guardian();
 
 	}
@@ -306,9 +348,23 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * pagina para mostrar variables alrmas etc
 	 */
+
 	public class DummySectionFragment extends Fragment {
 
 		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public DummySectionFragment newInstance(int sectionNumber) {
+			DummySectionFragment fragment = new DummySectionFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
+		}
+
+		public DummySectionFragment() {
+			int a = 0;
+			a = 2;
+		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -319,7 +375,8 @@ public class MainActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_item_detail,
 					container, false);
 
-			TextView textoip = (TextView) rootView.findViewById(R.id.thistorial);
+			TextView textoip = (TextView) rootView
+					.findViewById(R.id.thistorial);
 			textoip.setFocusable(false);
 			TextView textorefresco = (TextView) rootView
 					.findViewById(R.id.textorefresco);
@@ -351,7 +408,7 @@ public class MainActivity extends FragmentActivity {
 			ListView listaVariables = (ListView) rootView
 					.findViewById(R.id.listVariables);
 			listaVariables.setScrollbarFadingEnabled(false);
-			listaVariables.setScrollBarSize(10);
+			// listaVariables.setScrollBarSize(10);
 			ListView listaAlarmas = (ListView) rootView
 					.findViewById(R.id.listAlarmas);
 
@@ -401,20 +458,23 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			plc mp = servidor.plcs.get(getArguments()
-					.getInt(ARG_SECTION_NUMBER));
+			int section = getArguments().getInt(ARG_SECTION_NUMBER);
+			plc mp = servidor.plcs.get(section);
 
 			View rootView = inflater.inflate(R.layout.comunicacion_item_detail,
 					container, false);
 
-			
-			ScrollView miscroll = (ScrollView) rootView.findViewById(R.id.miscroll);
-			miscroll.setScrollbarFadingEnabled(false);	
+			ScrollView miscroll = (ScrollView) rootView
+					.findViewById(R.id.miscroll);
+			miscroll.setScrollbarFadingEnabled(false);
 			miscroll.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
-			LinearLayout milayout = dibuja.rellena(mp);
+			LinearLayout milayout;
+			milayout = scrolls.get(section);
+			if (milayout.getParent() != null)
+				((ViewGroup) milayout.getParent()).removeView(milayout);
 			miscroll.addView(milayout);
 
-	//		((ViewGroup) rootView).addView(milayout);
+			// ((ViewGroup) rootView).addView(milayout);
 
 			return rootView;
 		}
@@ -497,7 +557,7 @@ public class MainActivity extends FragmentActivity {
 		if (v.getId() == R.id.listVariables)
 			clickvariable = true;
 		else
-			clickvariable = true;
+			clickvariable = false;
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		indvariable = info.position;
 	}
@@ -507,31 +567,59 @@ public class MainActivity extends FragmentActivity {
 
 		switch (item.getItemId()) {
 		case R.id.item3:
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-					ctx);
-			alertDialogBuilder.setTitle("Atencion");
-			alertDialogBuilder
-					.setMessage("Va a eliminar una variable!")
-					.setCancelable(false)
-					.setPositiveButton("Aceptar",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									servidor.plcs.get(MainActivity.pagina).variables
-											.remove(MainActivity.indvariable);
-									xml.generarServidor();
-									dialog.cancel();
-								};
-							})
-					.setNegativeButton("Cancelar",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			AlertDialog alertDialog = alertDialogBuilder.create();
-			alertDialog.show();
+			if (clickvariable) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						ctx);
+				alertDialogBuilder.setTitle("Atencion");
+				alertDialogBuilder
+						.setMessage("Va a eliminar una variable!")
+						.setCancelable(false)
+						.setPositiveButton("Aceptar",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										servidor.plcs.get(MainActivity.pagina).variables
+												.remove(MainActivity.indvariable);
+										xml.generarServidor();
+										dialog.cancel();
+									};
+								})
+						.setNegativeButton("Cancelar",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			} else {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						ctx);
+				alertDialogBuilder.setTitle("Atencion");
+				alertDialogBuilder
+						.setMessage("Va a eliminar una alarma!")
+						.setCancelable(false)
+						.setPositiveButton("Aceptar",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										servidor.plcs.get(MainActivity.pagina).ListaAlarmas
+												.remove(MainActivity.indvariable);
+										xml.generarServidor();
+										dialog.cancel();
+									};
+								})
+						.setNegativeButton("Cancelar",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
 
 			return true;
 		case R.id.item2:
@@ -545,7 +633,7 @@ public class MainActivity extends FragmentActivity {
 				dialogo.show(getSupportFragmentManager(), "editar");
 			} else {
 				alarma mialarma = servidor.plcs.get(MainActivity.pagina).ListaAlarmas
-						.get(MainActivity.indalarma);
+						.get(MainActivity.indvariable);
 				EditarAlarmas dialogo = new EditarAlarmas(mialarma,
 						servidor.plcs.get(MainActivity.pagina));
 				dialogo.show(getSupportFragmentManager(), "editar");
@@ -553,18 +641,62 @@ public class MainActivity extends FragmentActivity {
 			return true;
 
 		case R.id.subir:
-			java.util.Collections.swap(
-					servidor.plcs.get(MainActivity.pagina).variables,
-					MainActivity.indvariable, MainActivity.indvariable - 1);
-			xml.generarServidor();
-			xml.escribirXml(MainActivity.ctx);
+			if (clickvariable) {
+				java.util.Collections.swap(
+						servidor.plcs.get(MainActivity.pagina).variables,
+						MainActivity.indvariable, MainActivity.indvariable - 1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			} else {
+				java.util.Collections.swap(
+						servidor.plcs.get(MainActivity.pagina).ListaAlarmas,
+						MainActivity.indvariable, MainActivity.indvariable - 1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			}
 			return true;
 		case R.id.bajar:
-			java.util.Collections.swap(
-					servidor.plcs.get(MainActivity.pagina).variables,
-					MainActivity.indvariable, MainActivity.indvariable + 1);
-			xml.generarServidor();
-			xml.escribirXml(MainActivity.ctx);
+			if (clickvariable) {
+				java.util.Collections.swap(
+						servidor.plcs.get(MainActivity.pagina).variables,
+						MainActivity.indvariable, MainActivity.indvariable + 1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			} else {
+				java.util.Collections.swap(
+						servidor.plcs.get(MainActivity.pagina).ListaAlarmas,
+						MainActivity.indvariable, MainActivity.indvariable + 1);
+				xml.generarServidor();
+				xml.escribirXml(MainActivity.ctx);
+			}
+			return true;
+
+		case R.id.enviarMail:
+			if (clickvariable) {
+				item variable = servidor.plcs.get(MainActivity.pagina).variables
+						.get(MainActivity.indvariable);
+				final Intent emailIntent = new Intent(
+						android.content.Intent.ACTION_SEND);
+				emailIntent.setType("plain/text");
+				// emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
+				emailIntent.putExtra(Intent.EXTRA_SUBJECT,
+						"historico de variable :" + variable.nombre);
+
+				String texto = "";
+				for (int i = 0; i < variable.historial.buffer.length; i++) {
+					texto = texto + Double.toString(variable.historial.Gety(i))
+							+ ";" + Double.toString(variable.historial.Getx(i))
+							+ "\n";
+				}
+				emailIntent.putExtra(Intent.EXTRA_TEXT, texto);
+
+				MainActivity.ctx.startActivity(Intent.createChooser(
+						emailIntent, "Send mail..."));
+			} else {
+				Toast toast = Toast.makeText(MainActivity.ctx,
+						"No Exiete historico para las alarmas ",
+						Toast.LENGTH_SHORT);
+			}
 			return true;
 		default:
 			return super.onContextItemSelected(item);
